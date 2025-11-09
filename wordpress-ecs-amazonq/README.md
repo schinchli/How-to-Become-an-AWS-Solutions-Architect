@@ -1,10 +1,10 @@
 # WordPress on AWS ECS with WAF Protection
 
-> **Built with Amazon Q Developer CLI** - Complete infrastructure deployment using AI-assisted commands
+> **Production-ready WordPress deployment on AWS ECS Fargate with comprehensive security**
 
 ## 🏗️ Architecture Overview
 
-This project demonstrates deploying a production-ready WordPress application on AWS ECS Fargate with comprehensive security features, built entirely using Amazon Q Developer CLI assistance.
+This project demonstrates deploying a scalable WordPress application on AWS ECS Fargate with enterprise-grade security features.
 
 ```mermaid
 graph TB
@@ -62,7 +62,6 @@ graph TB
 
 ### Prerequisites
 - AWS CLI configured with appropriate permissions
-- Amazon Q Developer CLI installed (`q` command)
 - Basic understanding of AWS services
 
 ### 1. Clone Repository
@@ -72,7 +71,7 @@ cd ArchitectingonAWS/wordpress-ecs-amazonq
 ```
 
 ### 2. Deploy Infrastructure
-Follow the step-by-step commands in the deployment guide below, or use Amazon Q Developer CLI to assist with the deployment.
+Follow the step-by-step commands in the deployment guide below, or use the provided deployment script.
 
 ## 📋 Infrastructure Components
 
@@ -301,21 +300,11 @@ aws elbv2 describe-target-health --target-group-arn $TARGET_GROUP_ARN --region u
 aws cloudfront get-distribution --id $DISTRIBUTION_ID --region us-east-1
 ```
 
-## 🤖 Built with Amazon Q Developer
-
-This entire infrastructure was deployed using Amazon Q Developer CLI assistance, demonstrating:
-
-- **AI-Assisted Infrastructure**: Step-by-step guidance for complex AWS deployments
-- **Best Practices**: Security-first approach with comprehensive protection
-- **Troubleshooting**: Real-time problem solving and optimization
-- **Documentation**: Auto-generated architecture diagrams and deployment guides
-
 ## 📚 Additional Resources
 
 - [AWS ECS Documentation](https://docs.aws.amazon.com/ecs/)
 - [AWS CloudFront Documentation](https://docs.aws.amazon.com/cloudfront/)
 - [AWS WAF Documentation](https://docs.aws.amazon.com/waf/)
-- [Amazon Q Developer](https://aws.amazon.com/q/developer/)
 
 ## 📄 License
 
