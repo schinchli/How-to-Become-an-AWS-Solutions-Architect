@@ -6,20 +6,22 @@ This repository contains enterprise-grade AWS architecture implementations with 
 
 ## 🚀 Projects
 
-### [WordPress on ECS with Enhanced Security](./wordpress-ecs-amazonq/)
+### [WordPress on ECS with Enhanced Security](./wordpress-ecs-private-subnets/)
 
 A complete production-ready WordPress deployment on AWS ECS Fargate with comprehensive security features:
 
 - **🏗️ Architecture**: ECS Fargate + Private Subnets + NAT Gateway + ALB
 - **🔒 Security**: Private subnet isolation, dedicated security groups, least privilege access
+- **🚀 Automation**: Multi-region deployment scripts with validation
 - **📚 Documentation**: Complete deployment guide with troubleshooting
 
 **Key Features:**
 - Multi-container WordPress + MySQL setup in private subnets
 - Enhanced security with no public IP addresses for containers
 - NAT Gateway for controlled internet access
-- Auto-scaling and health monitoring
-- Production security best practices
+- Automated deployment scripts for multiple regions and environments
+- Comprehensive validation and health checking
+- Production security best practices with zero-trust networking
 
 [**→ View Project**](./wordpress-ecs-amazonq/)
 

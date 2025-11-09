@@ -12,41 +12,53 @@ graph TB
         U[Users]
     end
     
-    subgraph "AWS Region: us-east-1"
+    subgraph "AWS Region: Multi-Region Support"
         subgraph "VPC: Default VPC (172.31.0.0/16)"
             subgraph "Public Subnets (Multi-AZ)"
-                ALB[Application Load Balancer<br/>Internet-Facing<br/>Port 80]
-                NAT[NAT Gateway<br/>98.82.207.73<br/>Outbound Internet Access]
+                ALB[Application Load Balancer<br/>Internet-Facing<br/>Port 80<br/>Dedicated Security Group]
+                NAT[NAT Gateway<br/>Elastic IP<br/>Outbound Internet Access]
             end
             
             subgraph "Private Subnets (Multi-AZ)"
-                subgraph "us-east-1a: 172.31.96.0/20"
-                    subgraph "ECS Cluster: Fargate"
-                        subgraph "Task Definition"
-                            WP1[WordPress Container<br/>Port 80<br/>No Public IP]
-                            DB1[MySQL 5.7 Container<br/>Port 3306<br/>Health Check Enabled]
+                subgraph "AZ-A: Dynamic CIDR"
+                    subgraph "ECS Fargate Cluster"
+                        subgraph "WordPress Task"
+                            WP1[WordPress Container<br/>Port 80<br/>No Public IP<br/>Auto-scaling Ready]
+                            DB1[MySQL 5.7 Container<br/>Port 3306<br/>Health Checks<br/>Persistent Storage]
                         end
                     end
                 end
                 
-                subgraph "us-east-1b: 172.31.112.0/20"
-                    subgraph "ECS Cluster: Fargate"
-                        subgraph "Task Definition"
-                            WP2[WordPress Container<br/>Port 80<br/>No Public IP]
-                            DB2[MySQL 5.7 Container<br/>Port 3306<br/>Health Check Enabled]
+                subgraph "AZ-B: Dynamic CIDR"
+                    subgraph "ECS Fargate Cluster"
+                        subgraph "WordPress Task"
+                            WP2[WordPress Container<br/>Port 80<br/>No Public IP<br/>Auto-scaling Ready]
+                            DB2[MySQL 5.7 Container<br/>Port 3306<br/>Health Checks<br/>Persistent Storage]
                         end
                     end
                 end
             end
             
-            ALBSG[ALB Security Group<br/>sg-0935e322c5774b1ed<br/>Inbound: 0.0.0.0/0:80]
-            APPSG[Container Security Group<br/>sg-0af75bfdf1a9ce600<br/>Inbound: ALB SG Only]
-            TG[Target Group<br/>Health Check: 200,302<br/>10s interval, 2s timeout]
-            RT[Private Route Table<br/>0.0.0.0/0 → NAT Gateway]
+            ALBSG[ALB Security Group<br/>Internet → ALB:80<br/>Least Privilege]
+            APPSG[Container Security Group<br/>ALB SG → Container:80<br/>Zero Trust Model]
+            TG[Target Group<br/>Health Check: 200,302<br/>Automated Failover]
+            RT[Private Route Table<br/>0.0.0.0/0 → NAT Gateway<br/>Controlled Internet Access]
         end
         
-        CW[CloudWatch Logs<br/>/ecs/wordpress]
-        IAM[IAM Role<br/>ecsTaskExecutionRole]
+        subgraph "Monitoring & Logging"
+            CW[CloudWatch Logs<br/>Container Logs<br/>Application Metrics]
+            CWA[CloudWatch Alarms<br/>Health Monitoring<br/>Auto-scaling Triggers]
+        end
+        
+        subgraph "Security & Access"
+            IAM[IAM Execution Role<br/>Least Privilege<br/>Task Permissions]
+            SM[Secrets Manager<br/>Database Credentials<br/>Secure Storage]
+        end
+        
+        subgraph "Deployment Automation"
+            DS[Deploy Script<br/>Multi-Region Support<br/>Environment Isolation]
+            VS[Validation Script<br/>Health Checks<br/>Automated Testing]
+        end
     end
     
     U -->|HTTP/HTTPS| ALB
@@ -55,29 +67,36 @@ graph TB
     TG -->|Health Checks| WP2
     WP1 -->|127.0.0.1:3306| DB1
     WP2 -->|127.0.0.1:3306| DB2
-    WP1 -->|Internet Access| NAT
-    WP2 -->|Internet Access| NAT
+    WP1 -->|Controlled Access| NAT
+    WP2 -->|Controlled Access| NAT
     NAT -->|Docker Pulls/Updates| U
-    WP1 -->|Logs| CW
-    WP2 -->|Logs| CW
-    DB1 -->|Logs| CW
-    DB2 -->|Logs| CW
-    ALBSG -.->|Protects| ALB
-    APPSG -.->|Protects| WP1
-    APPSG -.->|Protects| WP2
-    RT -.->|Routes Traffic| NAT
-    IAM -.->|Execution Role| WP1
-    IAM -.->|Execution Role| WP2
+    WP1 -->|Application Logs| CW
+    WP2 -->|Application Logs| CW
+    DB1 -->|Database Logs| CW
+    DB2 -->|Database Logs| CW
+    CW -->|Metrics| CWA
+    ALBSG -.->|Network Security| ALB
+    APPSG -.->|Container Security| WP1
+    APPSG -.->|Container Security| WP2
+    RT -.->|Route Management| NAT
+    IAM -.->|Access Control| WP1
+    IAM -.->|Access Control| WP2
+    SM -.->|Secure Credentials| DB1
+    SM -.->|Secure Credentials| DB2
+    DS -.->|Automated Deployment| ALB
+    VS -.->|Health Validation| TG
     
     classDef aws fill:#FF9900,stroke:#232F3E,stroke-width:2px,color:#fff
     classDef security fill:#FF4B4B,stroke:#232F3E,stroke-width:2px,color:#fff
     classDef container fill:#4B9AFF,stroke:#232F3E,stroke-width:2px,color:#fff
     classDef network fill:#9D5AAE,stroke:#232F3E,stroke-width:2px,color:#fff
+    classDef automation fill:#00C853,stroke:#232F3E,stroke-width:2px,color:#fff
     
     class ALB,TG,CW,IAM,NAT aws
-    class ALBSG,APPSG security
+    class ALBSG,APPSG,SM security
     class WP1,WP2,DB1,DB2 container
-    class RT network
+    class RT,CWA network
+    class DS,VS automation
 ```
 
 ## 🚀 Quick Start
@@ -89,11 +108,31 @@ graph TB
 ### 1. Clone Repository
 ```bash
 git clone https://github.com/schinchli/ArchitectingonAWS.git
-cd ArchitectingonAWS/wordpress-ecs-amazonq
+cd ArchitectingonAWS/wordpress-ecs-private-subnets
 ```
 
-### 2. Deploy Infrastructure
-Follow the step-by-step commands in the deployment guide below, or use the provided deployment script.
+### 2. Automated Deployment
+```bash
+# Deploy to us-east-1 with 'prod' environment
+./deploy-multi-region.sh us-east-1 prod
+
+# Deploy to us-west-1 with 'dev' environment
+./deploy-multi-region.sh us-west-1 dev
+```
+
+### 3. Validate Deployment
+```bash
+# Run validation tests
+./validate-deployment.sh us-east-1
+
+# Manual test
+curl -I http://YOUR_ALB_DNS_NAME
+```
+
+### 4. Access WordPress
+After deployment completes (5-10 minutes):
+- **Installation**: `http://YOUR_ALB_DNS_NAME/wp-admin/install.php`
+- **Website**: `http://YOUR_ALB_DNS_NAME`
 
 ## 📋 Infrastructure Components
 
@@ -102,8 +141,14 @@ Follow the step-by-step commands in the deployment guide below, or use the provi
 - **Task Definition**: WordPress + MySQL containers with health checks
 - **Application Load Balancer**: Multi-AZ load balancing in public subnets
 - **NAT Gateway**: Controlled internet access for private subnet containers
-- **Private Subnets**: Isolated container environment (172.31.96.0/20, 172.31.112.0/20)
+- **Private Subnets**: Isolated container environment with dynamic CIDR allocation
 - **Security Groups**: Dedicated groups for ALB and containers
+
+### Automation & Deployment
+- **Multi-Region Deployment Script**: Automated infrastructure provisioning
+- **Validation Script**: Health checks and deployment verification
+- **Environment Isolation**: Support for dev, staging, prod environments
+- **Dynamic Configuration**: Region-agnostic deployment capability
 
 ### Security Features
 - ✅ **Private Subnet Architecture**: Containers have no public IP addresses
@@ -112,6 +157,7 @@ Follow the step-by-step commands in the deployment guide below, or use the provi
 - ✅ **NAT Gateway**: Controlled outbound internet access for updates
 - ✅ **Multi-AZ Deployment**: High availability across availability zones
 - ✅ **Network Isolation**: Defense in depth with multiple security layers
+- ✅ **Zero Trust Model**: No implicit trust between network segments
 
 ## 🛠️ Deployment Guide
 
@@ -303,12 +349,30 @@ aws ecs create-service \
 
 ## 📁 Configuration Files
 
-All configuration files are provided in this repository:
+All configuration files and deployment scripts are provided in this repository:
 
+### Deployment Scripts
+- `deploy-multi-region.sh` - Automated multi-region deployment script
+- `validate-deployment.sh` - Deployment validation and health checks
+- `DEPLOYMENT_GUIDE.md` - Comprehensive deployment documentation
+
+### Configuration Files
 - `wordpress-task-definition.json` - ECS task definition with WordPress and MySQL
-- `waf-config.json` - WAF configuration with security rules
-- `cloudfront-config.json` - CloudFront distribution configuration
 - `trust-policy.json` - IAM role trust policy
+- `cloudfront-config.json` - CloudFront distribution configuration (optional)
+- `waf-config.json` - WAF configuration with security rules (optional)
+
+### Usage Examples
+```bash
+# Deploy production environment to us-east-1
+./deploy-multi-region.sh us-east-1 prod
+
+# Deploy development environment to us-west-2
+./deploy-multi-region.sh us-west-2 dev
+
+# Validate any deployment
+./validate-deployment.sh us-east-1
+```
 
 ## 🔒 Security Best Practices
 
