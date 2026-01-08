@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS S3 Static Website Demo</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="logo">AWS S3 Demo</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <h1>Welcome to AWS S3 Static Website Hosting</h1>
+                <p>This website is hosted entirely on Amazon S3 - demonstrating serverless, scalable, and cost-effective web hosting.</p>
+                <a href="#features" class="cta-button">Learn More</a>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <h2>Key Features</h2>
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">&#9729;</div>
+                    <h3>Serverless Hosting</h3>
+                    <p>No servers to manage. S3 handles all the infrastructure automatically.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#36;</div>
+                    <h3>Cost Effective</h3>
+                    <p>Pay only for storage and data transfer. No idle server costs.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#8593;</div>
+                    <h3>Auto Scaling</h3>
+                    <p>Handles traffic spikes automatically without any configuration.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">&#127760;</div>
+                    <h3>Global Delivery</h3>
+                    <p>Integrate with CloudFront CDN for worldwide low-latency access.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="architecture">
+            <h2>Architecture Overview</h2>
+            <div class="arch-diagram">
+                <div class="arch-component">
+                    <span class="arch-icon">&#128100;</span>
+                    <span>Users</span>
+                </div>
+                <div class="arch-arrow">&#8594;</div>
+                <div class="arch-component">
+                    <span class="arch-icon">&#127760;</span>
+                    <span>CloudFront</span>
+                </div>
+                <div class="arch-arrow">&#8594;</div>
+                <div class="arch-component">
+                    <span class="arch-icon">&#128230;</span>
+                    <span>S3 Bucket</span>
+                </div>
+            </div>
+            <div class="arch-details">
+                <h3>How It Works</h3>
+                <ol>
+                    <li>User requests your website URL</li>
+                    <li>Route 53 resolves DNS to CloudFront</li>
+                    <li>CloudFront serves cached content from edge locations</li>
+                    <li>If not cached, CloudFront fetches from S3 origin</li>
+                    <li>S3 returns the static files (HTML, CSS, JS, images)</li>
+                </ol>
+            </div>
+        </section>
+
+        <section id="services" class="services">
+            <h2>AWS Services Used</h2>
+            <div class="service-list">
+                <div class="service-item">
+                    <h4>Amazon S3</h4>
+                    <p>Object storage for hosting static website files</p>
+                </div>
+                <div class="service-item">
+                    <h4>Amazon CloudFront</h4>
+                    <p>CDN for global content delivery and HTTPS</p>
+                </div>
+                <div class="service-item">
+                    <h4>AWS Certificate Manager</h4>
+                    <p>Free SSL/TLS certificates for HTTPS</p>
+                </div>
+                <div class="service-item">
+                    <h4>Amazon Route 53</h4>
+                    <p>DNS service for custom domain names</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="contact">
+            <h2>Get Started</h2>
+            <p>Ready to host your own static website on AWS S3?</p>
+            <p>Check out the deployment guide in this repository!</p>
+            <div class="deployment-info">
+                <p><strong>Deployment Status:</strong> <span id="status" class="status-badge">Live</span></p>
+                <p><strong>Last Updated:</strong> <span id="timestamp"></span></p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>AWS S3 Static Website Hosting Lab | Architecting on AWS</p>
+        <p>Powered by Amazon Web Services</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

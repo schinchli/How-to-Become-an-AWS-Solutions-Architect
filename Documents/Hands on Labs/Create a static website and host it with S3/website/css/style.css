@@ -1,0 +1,353 @@
+/* AWS S3 Static Website Demo Styles */
+
+:root {
+    --aws-orange: #FF9900;
+    --aws-dark: #232F3E;
+    --aws-light: #F2F3F3;
+    --aws-blue: #146EB4;
+    --text-primary: #16191F;
+    --text-secondary: #545B64;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+/* Navigation */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 5%;
+    background: var(--aws-dark);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    color: var(--aws-orange);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: white;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.nav-links a:hover {
+    color: var(--aws-orange);
+}
+
+/* Hero Section */
+.hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--aws-dark) 0%, #37475A 100%);
+    color: white;
+    text-align: center;
+    padding: 0 5%;
+    padding-top: 60px;
+}
+
+.hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    color: var(--aws-orange);
+}
+
+.hero-content p {
+    font-size: 1.25rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    color: var(--aws-light);
+}
+
+.cta-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background: var(--aws-orange);
+    color: var(--aws-dark);
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.cta-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 0, 0.4);
+}
+
+/* Features Section */
+.features {
+    padding: 5rem 5%;
+    background: var(--aws-light);
+}
+
+.features h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--aws-dark);
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.feature-card h3 {
+    color: var(--aws-dark);
+    margin-bottom: 0.5rem;
+}
+
+.feature-card p {
+    color: var(--text-secondary);
+}
+
+/* Architecture Section */
+.architecture {
+    padding: 5rem 5%;
+    background: white;
+}
+
+.architecture h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--aws-dark);
+}
+
+.arch-diagram {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 3rem;
+}
+
+.arch-component {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: var(--aws-light);
+    border-radius: 8px;
+    border: 2px solid var(--aws-orange);
+}
+
+.arch-icon {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.arch-arrow {
+    font-size: 2rem;
+    color: var(--aws-orange);
+}
+
+.arch-details {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--aws-light);
+    padding: 2rem;
+    border-radius: 8px;
+}
+
+.arch-details h3 {
+    color: var(--aws-dark);
+    margin-bottom: 1rem;
+}
+
+.arch-details ol {
+    padding-left: 1.5rem;
+}
+
+.arch-details li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+/* Services Section */
+.services {
+    padding: 5rem 5%;
+    background: var(--aws-dark);
+    color: white;
+}
+
+.services h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 3rem;
+    color: var(--aws-orange);
+}
+
+.service-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.service-item {
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border-left: 4px solid var(--aws-orange);
+}
+
+.service-item h4 {
+    color: var(--aws-orange);
+    margin-bottom: 0.5rem;
+}
+
+.service-item p {
+    color: var(--aws-light);
+}
+
+/* Contact Section */
+.contact {
+    padding: 5rem 5%;
+    background: var(--aws-light);
+    text-align: center;
+}
+
+.contact h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--aws-dark);
+}
+
+.contact p {
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+}
+
+.deployment-info {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 8px;
+    display: inline-block;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: #28a745;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+/* Footer */
+footer {
+    padding: 2rem 5%;
+    background: var(--aws-dark);
+    color: var(--aws-light);
+    text-align: center;
+}
+
+footer p {
+    margin-bottom: 0.5rem;
+}
+
+/* Error Page Styles */
+.error-page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--aws-light);
+    text-align: center;
+    padding: 2rem;
+}
+
+.error-page h1 {
+    font-size: 6rem;
+    color: var(--aws-orange);
+    margin-bottom: 1rem;
+}
+
+.error-page h2 {
+    color: var(--aws-dark);
+    margin-bottom: 1rem;
+}
+
+.error-page p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .navbar {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .nav-links {
+        gap: 1rem;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-content p {
+        font-size: 1rem;
+    }
+
+    .arch-diagram {
+        flex-direction: column;
+    }
+
+    .arch-arrow {
+        transform: rotate(90deg);
+    }
+}
