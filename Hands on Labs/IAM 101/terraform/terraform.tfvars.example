@@ -1,0 +1,27 @@
+# =============================================================================
+# Example Terraform Variables for IAM 101
+# Copy this file to terraform.tfvars and customize as needed
+# =============================================================================
+
+# AWS Region
+region = "us-east-1"
+
+# Environment tag
+environment = "training"
+
+# Your identifier (for tagging)
+created_by = "your-name"
+
+# Prefix for user names (optional)
+# Useful if running multiple demos in same account
+# Example: "demo1-" creates "demo1-user1", "demo1-user2", etc.
+user_prefix = ""
+
+# Create access keys for programmatic access
+# WARNING: Set to true only if you need CLI/SDK access
+# Access keys will be shown in terraform output (sensitive)
+create_access_keys = false
+
+# Create a group containing all demo users
+# Useful for bulk policy management
+create_user_group = false
