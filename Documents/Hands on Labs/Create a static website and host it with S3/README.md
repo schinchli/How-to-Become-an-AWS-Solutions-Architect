@@ -1,4 +1,4 @@
-# How to Host a Static Website on AWS S3 with CloudFront CDN: Complete 2024 Guide
+# How to Host a Static Website on AWS S3 with CloudFront CDN: Complete 2026 Guide
 
 > **Deploy a serverless, secure, and globally distributed static website on AWS for under $0.05/month**
 
@@ -23,7 +23,7 @@ A production-ready static website hosted on **Amazon S3** with **CloudFront CDN*
 
 ---
 
-> **Advanced Users**: Prefer Infrastructure as Code? Deploy this architecture using Terraform for version-controlled, reproducible deployments. **[Click here to read more →](https://github.com/schinchli/ArchitectingonAWS/issues/1)**
+> **Advanced Users**: Prefer Infrastructure as Code? Deploy this architecture using Terraform for version-controlled, reproducible deployments. **[Continue with Terraform →](./terraform/README.md)**
 
 ---
 
@@ -247,7 +247,7 @@ aws cloudfront get-distribution --id "$CF_ID" --query 'Distribution.Status'
 
 ## Pricing Breakdown
 
-### AWS Pricing (us-east-1, January 2024)
+### AWS Pricing (us-east-1, January 2026)
 
 #### Amazon S3
 
@@ -387,4 +387,4 @@ aws s3 sync ./website/ s3://$BUCKET_NAME/
 
 **Keywords**: AWS S3 static website hosting, CloudFront CDN tutorial, serverless website AWS, S3 CloudFront OAI, host static website AWS, AWS website hosting cost, CloudFront HTTPS setup
 
-**Last Updated**: January 2024
+**Last Updated**: January 2026

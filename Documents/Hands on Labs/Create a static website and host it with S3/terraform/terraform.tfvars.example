@@ -1,0 +1,20 @@
+# =============================================================================
+# Example Terraform Variables
+# Copy this file to terraform.tfvars and customize values
+# =============================================================================
+
+# AWS Region (us-east-1 recommended for CloudFront)
+region = "us-east-1"
+
+# S3 Bucket Name (MUST be globally unique)
+# Replace with your own unique name
+bucket_name = "my-static-website-unique-123"
+
+# Environment tag
+environment = "production"
+
+# CloudFront Price Class
+# - PriceClass_100: North America + Europe (cheapest)
+# - PriceClass_200: NA + Europe + Asia + Middle East + Africa
+# - PriceClass_All: All edge locations (most expensive)
+cloudfront_price_class = "PriceClass_100"
