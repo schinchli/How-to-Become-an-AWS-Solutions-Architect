@@ -1,0 +1,41 @@
+# Terraform State Files
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+
+# Terraform Plan Files
+*.tfplan
+tfplan
+tfplan.*
+
+# Terraform Directory
+.terraform/
+.terraform.lock.hcl
+
+# Variable Files (may contain secrets)
+terraform.tfvars
+*.auto.tfvars
+
+# Crash Logs
+crash.log
+crash.*.log
+
+# Override Files
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI Configuration
+.terraformrc
+terraform.rc
+
+# IDE
+.idea/
+*.swp
+*.swo
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db

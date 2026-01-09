@@ -1,0 +1,30 @@
+# Deployment Artifacts
+deployment-info.json
+
+# Temporary Files
+/tmp/
+*.tmp
+
+# AWS Credentials (should never be committed)
+.aws/
+credentials
+*.pem
+*.key
+
+# Environment Files
+.env
+.env.*
+*.env
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs
+*.log
