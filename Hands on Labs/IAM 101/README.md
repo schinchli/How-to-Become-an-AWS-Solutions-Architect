@@ -465,6 +465,12 @@ echo "Cleanup complete!"
 | **IAM Policy Reference** | [docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html) |
 | **Condition Keys (aws:CalledVia)** | [docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html) |
 
+### Recommended Blog Posts
+
+| Topic | Link |
+|-------|------|
+| **Least Privileged Permissions for Service Actions** | [aws.amazon.com/blogs/security/how-to-define-least-privileged-permissions-for-actions-called-by-aws-services/](https://aws.amazon.com/blogs/security/how-to-define-least-privileged-permissions-for-actions-called-by-aws-services/) |
+
 ### Additional Resources
 
 | Resource | Link |

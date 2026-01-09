@@ -401,6 +401,10 @@ aws iam delete-policy \
 - [IAM Policy Condition Operators](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_elements_condition_operators.html)
 - [Multivalued Context Keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-single-vs-multi-valued-context-keys.html)
 
+## Recommended Reading
+
+- [How to define least-privileged permissions for actions called by AWS services](https://aws.amazon.com/blogs/security/how-to-define-least-privileged-permissions-for-actions-called-by-aws-services/) - AWS Security Blog
+
 ---
 
 **Created**: January 2026 | **Condition Key**: `aws:CalledVia`
