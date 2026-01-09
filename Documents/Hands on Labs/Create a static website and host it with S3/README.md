@@ -1,420 +1,386 @@
-# Create a Static Website and Host it with S3
+# How to Host a Static Website on AWS S3 with CloudFront CDN: Complete 2024 Guide
 
-> **Hands-on Lab: Deploy a 2048 Game on AWS S3 with CloudFront CDN and OAI**
+> **Deploy a serverless, secure, and globally distributed static website on AWS for under $0.05/month**
 
 ---
 
-## Architecture Overview
+## What We're Building
 
-### Mermaid Architecture Diagram
+A production-ready static website hosted on **Amazon S3** with **CloudFront CDN** for global delivery and **Origin Access Identity (OAI)** for security.
+
+### Key Features
+- **Serverless** - No servers to manage or patch
+- **Secure** - HTTPS only, private S3 bucket
+- **Fast** - Global CDN with 400+ edge locations
+- **Cost-effective** - ~$0.02-0.05/month for low traffic sites
+
+### Use Cases
+- Portfolio websites
+- Documentation sites
+- Landing pages
+- Single-page applications (SPAs)
+- Game hosting (like our 2048 demo)
+
+---
+
+## Architecture
 
 ```mermaid
 flowchart TB
-    subgraph Internet["Internet"]
-        Users["Users (Global)"]
+    subgraph Internet
+        U["Users Worldwide"]
     end
 
     subgraph AWS["AWS Cloud"]
-        subgraph Edge["CloudFront Edge Locations (400+)"]
-            CF["Amazon CloudFront<br/>Distribution: EMC9ISEYWZUE1<br/>Domain: d3444yex88j9gu.cloudfront.net"]
+        subgraph Edge["CloudFront Edge (400+ Locations)"]
+            CF["CloudFront Distribution<br/>HTTPS + HTTP/2 + Compression"]
         end
 
-        subgraph Origin["Origin (us-east-1)"]
-            OAI["Origin Access Identity<br/>ID: E2I1Y36EQI82X6"]
-            S3["Amazon S3 Bucket<br/>s3-2048-game-1767887080<br/><br/>Files:<br/>• index.html<br/>• error.html<br/>• styles.css<br/>• script.js"]
+        subgraph Origin["Origin Region (us-east-1)"]
+            OAI["Origin Access Identity"]
+            S3["S3 Bucket<br/>(Private)"]
         end
 
-        ACM["AWS Certificate Manager<br/>(Auto SSL/TLS)"]
+        ACM["ACM<br/>SSL Certificate"]
     end
 
-    Users -->|"HTTPS Request"| CF
-    CF -->|"Cache Hit"| Users
-    CF -->|"Cache Miss"| OAI
-    OAI -->|"Secure Access"| S3
-    ACM -.->|"SSL Certificate"| CF
-
-    style CF fill:#FF9900,color:#232F3E
-    style S3 fill:#3F8624,color:white
-    style OAI fill:#146EB4,color:white
-    style ACM fill:#DD344C,color:white
-```
-
-### Data Flow Diagram
-
-```mermaid
-sequenceDiagram
-    participant User as User Browser
-    participant DNS as DNS Resolver
-    participant CF as CloudFront Edge
-    participant Cache as Edge Cache
-    participant S3 as S3 Bucket (Origin)
-
-    User->>DNS: Request d3444yex88j9gu.cloudfront.net
-    DNS->>User: CloudFront IP Address
-    User->>CF: HTTPS GET /index.html
-    CF->>Cache: Check Cache
-
-    alt Cache Hit
-        Cache->>CF: Return Cached Content
-        CF->>User: 200 OK (Cached)
-    else Cache Miss
-        CF->>S3: Request via OAI
-        S3->>CF: Return Content
-        CF->>Cache: Store in Cache
-        CF->>User: 200 OK (From Origin)
-    end
-```
-
-### Security Architecture
-
-```mermaid
-flowchart LR
-    subgraph Public["Public Internet"]
-        User["Users"]
-    end
-
-    subgraph CloudFront["CloudFront (Public Endpoint)"]
-        CF["HTTPS Only<br/>TLS 1.2+<br/>HTTP/2"]
-    end
-
-    subgraph Private["Private (No Public Access)"]
-        OAI["OAI<br/>E2I1Y36EQI82X6"]
-        S3["S3 Bucket<br/>Block Public Access: ON"]
-        Policy["Bucket Policy<br/>Allow: OAI Only"]
-    end
-
-    User -->|"HTTPS"| CF
-    CF -->|"OAI Auth"| OAI
-    OAI --> S3
-    Policy --> S3
+    U -->|"1. HTTPS Request"| CF
+    CF -->|"2. Cache Miss"| OAI
+    OAI -->|"3. Authenticated"| S3
+    S3 -->|"4. Content"| CF
+    CF -->|"5. Response"| U
+    ACM -.->|"TLS"| CF
 
     style CF fill:#FF9900,color:#232F3E
     style S3 fill:#3F8624,color:white
     style OAI fill:#146EB4,color:white
 ```
 
----
-
-## AWS Components Deployed
-
-### Complete Resource Inventory
-
-| Component | Resource ID/Name | Region | Purpose |
-|-----------|------------------|--------|---------|
-| **S3 Bucket** | `s3-2048-game-1767887080` | us-east-1 | Static file storage |
-| **CloudFront Distribution** | `EMC9ISEYWZUE1` | Global | CDN delivery |
-| **CloudFront Domain** | `d3444yex88j9gu.cloudfront.net` | Global | Public endpoint |
-| **Origin Access Identity** | `E2I1Y36EQI82X6` | Global | Secure S3 access |
-| **SSL Certificate** | Auto-provisioned | us-east-1 | HTTPS encryption |
-
-### S3 Bucket Contents
-
-| File | Size | Content Type | Purpose |
-|------|------|--------------|---------|
-| `index.html` | 9,479 bytes | text/html | 2048 Game main page |
-| `error.html` | 1,567 bytes | text/html | Custom 404 error page |
-| `styles.css` | 7,344 bytes | text/css | Game styling |
-| `script.js` | 11,040 bytes | application/javascript | Game logic |
-| **Total** | **29,430 bytes** | - | ~29 KB |
-
----
-
-## AWS Pricing Breakdown
-
-### Detailed Cost Analysis
-
-#### Amazon S3 Pricing (us-east-1)
-
-| Pricing Component | Rate | This Deployment | Monthly Cost |
-|-------------------|------|-----------------|--------------|
-| **Storage** (Standard) | $0.023/GB | 0.00003 GB (29 KB) | $0.000001 |
-| **PUT Requests** | $0.005/1,000 | 4 initial uploads | $0.00002 |
-| **GET Requests** | $0.0004/1,000 | ~1,000/month | $0.0004 |
-| **Data Transfer Out** | $0.00/GB | Via CloudFront | $0.00 |
-| **S3 Subtotal** | - | - | **~$0.001** |
-
-#### Amazon CloudFront Pricing
-
-| Pricing Component | Rate | This Deployment | Monthly Cost |
-|-------------------|------|-----------------|--------------|
-| **Data Transfer Out** (First 10TB) | $0.085/GB | ~0.1 GB/month | $0.0085 |
-| **HTTPS Requests** (First 10M) | $0.0100/10,000 | ~10,000/month | $0.01 |
-| **Origin Shield** | Not enabled | - | $0.00 |
-| **CloudFront Subtotal** | - | - | **~$0.02** |
-
-#### Origin Access Identity
-
-| Component | Cost |
-|-----------|------|
-| OAI Creation | **FREE** |
-| OAI Usage | **FREE** |
-
-#### AWS Certificate Manager
-
-| Component | Cost |
-|-----------|------|
-| Public SSL Certificate | **FREE** (with CloudFront) |
-| Certificate Renewal | **FREE** (automatic) |
-
-### Total Monthly Cost Summary
-
-| Service | Monthly Cost |
-|---------|--------------|
-| Amazon S3 | ~$0.001 |
-| Amazon CloudFront | ~$0.02 |
-| Origin Access Identity | $0.00 |
-| AWS Certificate Manager | $0.00 |
-| **TOTAL** | **~$0.02 - $0.05/month** |
-
-> **Note**: Costs may vary based on traffic. AWS Free Tier includes 50 GB CloudFront data transfer and 2,000,000 requests per month for the first 12 months.
-
----
-
-## AWS Best Practices Implemented
-
-### Security Best Practices
-
-| Best Practice | Implementation | AWS Well-Architected Pillar |
-|---------------|----------------|------------------------------|
-| **Block Public Access** | S3 bucket has all public access blocked | Security |
-| **Origin Access Identity** | CloudFront accesses S3 via OAI only | Security |
-| **HTTPS Enforcement** | HTTP automatically redirects to HTTPS | Security |
-| **TLS 1.2+** | Modern encryption protocols only | Security |
-| **Least Privilege** | Bucket policy allows only OAI principal | Security |
-| **No S3 Website Hosting** | Static hosting disabled, CloudFront serves content | Security |
-
-### Performance Best Practices
-
-| Best Practice | Implementation | AWS Well-Architected Pillar |
-|---------------|----------------|------------------------------|
-| **Edge Caching** | 24-hour default TTL at 400+ edge locations | Performance Efficiency |
-| **HTTP/2** | Enabled for multiplexed connections | Performance Efficiency |
-| **Gzip Compression** | Automatic compression for text files | Performance Efficiency |
-| **Regional Origin** | S3 bucket in us-east-1 (optimal for CloudFront) | Performance Efficiency |
-
-### Cost Optimization Best Practices
-
-| Best Practice | Implementation | AWS Well-Architected Pillar |
-|---------------|----------------|------------------------------|
-| **PriceClass_100** | Use edge locations in NA and Europe only | Cost Optimization |
-| **Cache Optimization** | Long TTLs reduce origin requests | Cost Optimization |
-| **S3 Standard** | Appropriate for frequently accessed content | Cost Optimization |
-| **No Idle Resources** | Serverless architecture, pay only for usage | Cost Optimization |
-
-### Reliability Best Practices
-
-| Best Practice | Implementation | AWS Well-Architected Pillar |
-|---------------|----------------|------------------------------|
-| **Multi-AZ S3** | S3 automatically stores data across 3+ AZs | Reliability |
-| **CloudFront Redundancy** | Automatic failover between edge locations | Reliability |
-| **Custom Error Pages** | 404 errors return custom error.html | Reliability |
-| **11 9s Durability** | S3 provides 99.999999999% durability | Reliability |
-
-### Operational Excellence Best Practices
-
-| Best Practice | Implementation | AWS Well-Architected Pillar |
-|---------------|----------------|------------------------------|
-| **Infrastructure as Code** | Deployment via AWS CLI scripts | Operational Excellence |
-| **Versioning Ready** | Can enable S3 versioning for rollback | Operational Excellence |
-| **Logging Available** | Can enable CloudFront/S3 access logs | Operational Excellence |
-
----
-
-## Architecture Diagram (ASCII)
+### Request Flow
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                        AWS S3 Static Website Architecture                        │
-│                                                                                  │
-│  Website URL: https://d3444yex88j9gu.cloudfront.net                             │
-└─────────────────────────────────────────────────────────────────────────────────┘
-
-                                    ┌─────────────┐
-                                    │   Users     │
-                                    │  (Global)   │
-                                    └──────┬──────┘
-                                           │
-                                           │ HTTPS Request
-                                           ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                           Amazon CloudFront (CDN)                                │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │  Distribution ID: EMC9ISEYWZUE1                                          │   │
-│  │  Domain: d3444yex88j9gu.cloudfront.net                                  │   │
-│  │                                                                          │   │
-│  │  Configuration:                                                          │   │
-│  │  • Price Class: PriceClass_100 (NA + Europe)                            │   │
-│  │  • HTTPS: Redirect HTTP to HTTPS                                        │   │
-│  │  • HTTP/2: Enabled                                                      │   │
-│  │  • Compression: Enabled                                                 │   │
-│  │  • Default TTL: 86400 seconds (24 hours)                                │   │
-│  │  • Custom Error: 404 → /error.html                                      │   │
-│  │  • Default Root Object: index.html                                      │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
-                                          │
-                                          │ Origin Access Identity (OAI)
-                                          │ ID: E2I1Y36EQI82X6
-                                          ▼
-┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              Amazon S3 Bucket                                    │
-│  ┌─────────────────────────────────────────────────────────────────────────┐   │
-│  │  Bucket: s3-2048-game-1767887080                                        │   │
-│  │  Region: us-east-1                                                      │   │
-│  │                                                                          │   │
-│  │  Security:                                                               │   │
-│  │  ✓ BlockPublicAcls: true                                                │   │
-│  │  ✓ IgnorePublicAcls: true                                               │   │
-│  │  ✓ BlockPublicPolicy: true                                              │   │
-│  │  ✓ RestrictPublicBuckets: true                                          │   │
-│  │                                                                          │   │
-│  │  Bucket Policy: Allow s3:GetObject for OAI CanonicalUser only           │   │
-│  │                                                                          │   │
-│  │  Contents (29 KB total):                                                │   │
-│  │  ├── index.html      (9.5 KB)  - 2048 Game                              │   │
-│  │  ├── error.html      (1.5 KB)  - Custom 404                             │   │
-│  │  ├── styles.css      (7.3 KB)  - Styling                                │   │
-│  │  └── script.js       (11 KB)   - Game logic                             │   │
-│  └─────────────────────────────────────────────────────────────────────────┘   │
-└─────────────────────────────────────────────────────────────────────────────────┘
+User → CloudFront Edge → [Cache Hit?] → Return Cached Content
+                              ↓ No
+                         OAI Auth → S3 Bucket → Cache & Return
 ```
+
+### Components
+
+| Component | Purpose |
+|-----------|---------|
+| **S3 Bucket** | Stores website files (HTML, CSS, JS) |
+| **CloudFront** | CDN - caches content at edge locations |
+| **OAI** | Secure bridge between CloudFront and S3 |
+| **ACM** | Provides free SSL/TLS certificate |
 
 ---
 
-## Step-by-Step Deployment Guide
+## Implementation
 
 ### Prerequisites
 
-- AWS CLI configured with appropriate permissions
-- `jq` installed for JSON parsing
-- Basic understanding of S3 and CloudFront
+```bash
+# Required
+aws --version  # AWS CLI v2
+jq --version   # JSON processor
 
-### Step 1: Create S3 Bucket
+# Verify AWS credentials
+aws sts get-caller-identity
+```
+
+### Step 1: Create Private S3 Bucket
 
 ```bash
 # Set variables
-export BUCKET_NAME="s3-static-website-$(date +%s)"
-export REGION="us-east-1"
+BUCKET_NAME="my-static-site-$(date +%s)"
+REGION="us-east-1"
 
 # Create bucket
 aws s3api create-bucket \
     --bucket "$BUCKET_NAME" \
     --region "$REGION"
-```
 
-### Step 2: Block Public Access
-
-```bash
-# Block ALL public access - CloudFront OAI will provide access
+# Block ALL public access
 aws s3api put-public-access-block \
     --bucket "$BUCKET_NAME" \
     --public-access-block-configuration \
     "BlockPublicAcls=true,IgnorePublicAcls=true,BlockPublicPolicy=true,RestrictPublicBuckets=true"
 ```
 
-### Step 3: Create CloudFront Origin Access Identity (OAI)
+### Step 2: Create Origin Access Identity
 
 ```bash
 # Create OAI
 OAI_RESULT=$(aws cloudfront create-cloud-front-origin-access-identity \
     --cloud-front-origin-access-identity-config \
-    "CallerReference=$(date +%s),Comment=OAI for $BUCKET_NAME")
+    "CallerReference=$(date +%s),Comment=OAI-$BUCKET_NAME")
 
-# Extract OAI details
+# Extract values
 OAI_ID=$(echo "$OAI_RESULT" | jq -r '.CloudFrontOriginAccessIdentity.Id')
-OAI_CANONICAL_USER=$(echo "$OAI_RESULT" | jq -r '.CloudFrontOriginAccessIdentity.S3CanonicalUserId')
+OAI_CANONICAL=$(echo "$OAI_RESULT" | jq -r '.CloudFrontOriginAccessIdentity.S3CanonicalUserId')
+
+echo "OAI ID: $OAI_ID"
 ```
 
-### Step 4: Configure Bucket Policy for OAI
+### Step 3: Configure Bucket Policy
 
 ```bash
-# Create bucket policy allowing only CloudFront OAI
-cat > bucket-policy.json << EOF
+# Allow only CloudFront OAI to access bucket
+cat > /tmp/policy.json << EOF
 {
     "Version": "2012-10-17",
-    "Statement": [
-        {
-            "Sid": "AllowCloudFrontOAI",
-            "Effect": "Allow",
-            "Principal": {
-                "CanonicalUser": "$OAI_CANONICAL_USER"
-            },
-            "Action": "s3:GetObject",
-            "Resource": "arn:aws:s3:::$BUCKET_NAME/*"
-        }
-    ]
+    "Statement": [{
+        "Effect": "Allow",
+        "Principal": {"CanonicalUser": "$OAI_CANONICAL"},
+        "Action": "s3:GetObject",
+        "Resource": "arn:aws:s3:::$BUCKET_NAME/*"
+    }]
 }
 EOF
 
-aws s3api put-bucket-policy --bucket "$BUCKET_NAME" --policy file://bucket-policy.json
+aws s3api put-bucket-policy --bucket "$BUCKET_NAME" --policy file:///tmp/policy.json
 ```
 
-### Step 5: Upload Website Files
+### Step 4: Upload Website Files
 
 ```bash
-# Upload all website files
+# Upload files
 aws s3 sync ./website/ "s3://$BUCKET_NAME/"
 
-# Set correct content types
-aws s3 cp "s3://$BUCKET_NAME/index.html" "s3://$BUCKET_NAME/index.html" \
+# Set content types (important for proper rendering)
+aws s3 cp "s3://$BUCKET_NAME/" "s3://$BUCKET_NAME/" --recursive \
+    --exclude "*" --include "*.html" \
     --content-type "text/html" --metadata-directive REPLACE
+
+aws s3 cp "s3://$BUCKET_NAME/" "s3://$BUCKET_NAME/" --recursive \
+    --exclude "*" --include "*.css" \
+    --content-type "text/css" --metadata-directive REPLACE
+
+aws s3 cp "s3://$BUCKET_NAME/" "s3://$BUCKET_NAME/" --recursive \
+    --exclude "*" --include "*.js" \
+    --content-type "application/javascript" --metadata-directive REPLACE
 ```
 
-### Step 6: Create CloudFront Distribution
+### Step 5: Create CloudFront Distribution
 
 ```bash
-# Create distribution (see deploy.sh for full config)
-aws cloudfront create-distribution --distribution-config file://cloudfront-config.json
+cat > /tmp/cf-config.json << EOF
+{
+    "CallerReference": "$(date +%s)",
+    "Comment": "Static website CDN",
+    "DefaultCacheBehavior": {
+        "TargetOriginId": "S3-$BUCKET_NAME",
+        "ViewerProtocolPolicy": "redirect-to-https",
+        "Compress": true,
+        "AllowedMethods": {"Quantity": 2, "Items": ["GET", "HEAD"],
+            "CachedMethods": {"Quantity": 2, "Items": ["GET", "HEAD"]}},
+        "ForwardedValues": {"QueryString": false, "Cookies": {"Forward": "none"}},
+        "MinTTL": 0, "DefaultTTL": 86400, "MaxTTL": 31536000,
+        "TrustedSigners": {"Enabled": false, "Quantity": 0}
+    },
+    "Origins": {"Quantity": 1, "Items": [{
+        "Id": "S3-$BUCKET_NAME",
+        "DomainName": "$BUCKET_NAME.s3.$REGION.amazonaws.com",
+        "S3OriginConfig": {"OriginAccessIdentity": "origin-access-identity/cloudfront/$OAI_ID"}
+    }]},
+    "Enabled": true,
+    "DefaultRootObject": "index.html",
+    "PriceClass": "PriceClass_100",
+    "HttpVersion": "http2"
+}
+EOF
+
+CF_RESULT=$(aws cloudfront create-distribution --distribution-config file:///tmp/cf-config.json)
+CF_DOMAIN=$(echo "$CF_RESULT" | jq -r '.Distribution.DomainName')
+CF_ID=$(echo "$CF_RESULT" | jq -r '.Distribution.Id')
+
+echo "Website URL: https://$CF_DOMAIN"
+echo "Distribution ID: $CF_ID"
+```
+
+### Step 6: Wait for Deployment
+
+```bash
+# Check status (takes 10-15 minutes)
+aws cloudfront get-distribution --id "$CF_ID" --query 'Distribution.Status'
+
+# When status is "Deployed", your site is live!
 ```
 
 ---
 
-## Console Configuration (Alternative)
+## AWS Best Practices
 
-### S3 Console
-1. Create bucket → Block all public access ✓
-2. Upload files (index.html, error.html, styles.css, script.js)
+### Security (Well-Architected)
 
-### CloudFront Console
-1. Create OAI: CloudFront → Origin access → Create
-2. Create Distribution:
-   - Origin: Select S3 bucket
-   - Origin access: Use OAI
-   - Viewer protocol: Redirect HTTP to HTTPS
-   - Default root object: index.html
-3. Wait 10-15 minutes for deployment
+| Practice | Implementation | Why |
+|----------|----------------|-----|
+| **Block Public Access** | All 4 settings enabled on S3 | Prevents accidental exposure |
+| **Origin Access Identity** | CloudFront-only access to S3 | Defense in depth |
+| **HTTPS Enforcement** | `redirect-to-https` policy | Data encryption in transit |
+| **TLS 1.2+** | CloudFront default | Modern encryption |
+| **Least Privilege** | Bucket policy allows only OAI | Minimal permissions |
+
+### Performance
+
+| Practice | Implementation | Benefit |
+|----------|----------------|---------|
+| **Edge Caching** | 24h default TTL | Reduced latency |
+| **HTTP/2** | Enabled | Multiplexed connections |
+| **Compression** | Gzip enabled | 70% smaller payloads |
+| **PriceClass_100** | NA + Europe edges | Cost-optimized caching |
+
+### Cost Optimization
+
+| Practice | Implementation | Savings |
+|----------|----------------|---------|
+| **No idle costs** | Serverless architecture | Pay only for usage |
+| **Regional origin** | Single S3 region | No cross-region transfer |
+| **Aggressive caching** | Long TTLs | Fewer origin requests |
+| **Right-sized price class** | PriceClass_100 | Lower edge costs |
 
 ---
 
-## Cleanup Commands
+## Pricing Breakdown
+
+### AWS Pricing (us-east-1, January 2024)
+
+#### Amazon S3
+
+| Component | Rate | Usage | Monthly Cost |
+|-----------|------|-------|--------------|
+| Storage (Standard) | $0.023/GB | 0.001 GB | $0.00002 |
+| PUT requests | $0.005/1,000 | 10 | $0.00005 |
+| GET requests | $0.0004/1,000 | 10,000 | $0.004 |
+| **S3 Total** | | | **$0.004** |
+
+#### Amazon CloudFront
+
+| Component | Rate | Usage | Monthly Cost |
+|-----------|------|-------|--------------|
+| Data Transfer (first 10TB) | $0.085/GB | 1 GB | $0.085 |
+| HTTPS Requests (first 10M) | $0.01/10,000 | 100,000 | $0.10 |
+| **CloudFront Total** | | | **$0.185** |
+
+#### Free Components
+
+| Component | Cost |
+|-----------|------|
+| Origin Access Identity | FREE |
+| ACM SSL Certificate | FREE |
+| CloudFront SSL | FREE |
+
+### Total Monthly Cost
+
+| Traffic Level | Estimated Cost |
+|---------------|----------------|
+| **Low** (1K visits) | ~$0.02 |
+| **Medium** (10K visits) | ~$0.20 |
+| **High** (100K visits) | ~$2.00 |
+
+> **AWS Free Tier**: 50GB CloudFront transfer + 2M requests/month for 12 months
+
+---
+
+## Cleanup
+
+### Delete All Resources
 
 ```bash
-# 1. Disable CloudFront distribution
-aws cloudfront get-distribution-config --id EMC9ISEYWZUE1 --query 'ETag' --output text
-# Save ETag, then disable and delete
+# 1. Disable CloudFront (required before deletion)
+ETAG=$(aws cloudfront get-distribution-config --id "$CF_ID" --query 'ETag' --output text)
+aws cloudfront get-distribution-config --id "$CF_ID" --query 'DistributionConfig' > /tmp/cf.json
+# Edit /tmp/cf.json: set "Enabled": false
+aws cloudfront update-distribution --id "$CF_ID" --if-match "$ETAG" \
+    --distribution-config file:///tmp/cf-disabled.json
 
-# 2. Empty S3 bucket
-aws s3 rm s3://s3-2048-game-1767887080 --recursive
+# 2. Wait for CloudFront to disable (5-10 minutes)
+watch -n 30 "aws cloudfront get-distribution --id $CF_ID --query 'Distribution.Status'"
 
-# 3. Delete S3 bucket
-aws s3api delete-bucket --bucket s3-2048-game-1767887080
+# 3. Delete CloudFront distribution
+ETAG=$(aws cloudfront get-distribution --id "$CF_ID" --query 'ETag' --output text)
+aws cloudfront delete-distribution --id "$CF_ID" --if-match "$ETAG"
 
 # 4. Delete OAI
-aws cloudfront delete-cloud-front-origin-access-identity --id E2I1Y36EQI82X6 --if-match ETAG
+OAI_ETAG=$(aws cloudfront get-cloud-front-origin-access-identity --id "$OAI_ID" --query 'ETag' --output text)
+aws cloudfront delete-cloud-front-origin-access-identity --id "$OAI_ID" --if-match "$OAI_ETAG"
+
+# 5. Empty and delete S3 bucket
+aws s3 rm "s3://$BUCKET_NAME" --recursive
+aws s3api delete-bucket --bucket "$BUCKET_NAME"
+
+echo "All resources deleted!"
+```
+
+### Quick Cleanup Script
+
+```bash
+#!/bin/bash
+# cleanup.sh - Delete all resources
+# Usage: ./cleanup.sh <bucket-name> <cf-distribution-id> <oai-id>
+
+BUCKET=$1; CF_ID=$2; OAI_ID=$3
+
+aws s3 rm "s3://$BUCKET" --recursive
+aws s3api delete-bucket --bucket "$BUCKET"
+# Note: CloudFront must be disabled first (manual step)
 ```
 
 ---
 
-## Learning Outcomes
+## Quick Reference
 
-- ✅ S3 bucket configuration for static content
-- ✅ CloudFront CDN setup and configuration
-- ✅ Origin Access Identity (OAI) security pattern
-- ✅ HTTPS/TLS encryption with ACM
-- ✅ AWS Well-Architected best practices
-- ✅ Cost optimization for serverless hosting
+### Files Structure
+
+```
+website/
+├── index.html      # Main page
+├── error.html      # 404 error page
+├── css/
+│   └── style.css   # Styles
+└── js/
+    └── main.js     # Scripts
+```
+
+### Key Commands
+
+```bash
+# Check distribution status
+aws cloudfront get-distribution --id $CF_ID --query 'Distribution.Status'
+
+# Invalidate cache (after updates)
+aws cloudfront create-invalidation --distribution-id $CF_ID --paths "/*"
+
+# View S3 bucket contents
+aws s3 ls s3://$BUCKET_NAME/
+
+# Sync local changes
+aws s3 sync ./website/ s3://$BUCKET_NAME/
+```
+
+### Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| 403 Forbidden | Check bucket policy has correct OAI |
+| Site not updating | Create CloudFront invalidation |
+| Mixed content warnings | Ensure all assets use HTTPS |
+| Slow first load | Normal - edge cache is cold |
 
 ---
 
-**Lab Status:** Documentation Complete | Infrastructure: Terminated
-**Last Updated:** January 2026
+## Summary
+
+| What | Details |
+|------|---------|
+| **Architecture** | S3 + CloudFront + OAI |
+| **Security** | Private bucket, HTTPS only, OAI |
+| **Performance** | Global CDN, HTTP/2, compression |
+| **Cost** | ~$0.02-0.20/month |
+| **Deployment Time** | ~15 minutes |
+
+---
+
+**Keywords**: AWS S3 static website hosting, CloudFront CDN tutorial, serverless website AWS, S3 CloudFront OAI, host static website AWS, AWS website hosting cost, CloudFront HTTPS setup
+
+**Last Updated**: January 2024
