@@ -233,6 +233,44 @@ Add permissions incrementally as needed.
 }
 ```
 
+#### 6. Use aws:CalledVia for Service-Based Access Control
+
+The `aws:CalledVia` condition key restricts access based on **which AWS service made the request**. This is powerful for enforcing Infrastructure as Code:
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3OnlyViaCloudFormation",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "*",
+      "Condition": {
+        "ForAnyValue:StringEquals": {
+          "aws:CalledVia": ["cloudformation.amazonaws.com"]
+        }
+      }
+    },
+    {
+      "Sid": "DenyDirectS3Access",
+      "Effect": "Deny",
+      "Action": "s3:*",
+      "Resource": "*",
+      "Condition": {
+        "Null": {"aws:CalledVia": "true"}
+      }
+    }
+  ]
+}
+```
+
+**Result:**
+- Direct `aws s3 ls` → ❌ Denied
+- CloudFormation creating S3 bucket → ✅ Allowed
+
+See [CALLEDVIA_CONDITION_EXAMPLE.md](./CALLEDVIA_CONDITION_EXAMPLE.md) for full demo.
+
 ### Least Privilege Hierarchy
 
 ```
@@ -425,6 +463,7 @@ echo "Cleanup complete!"
 | **Least Privilege** | [docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege) |
 | **IAM Access Analyzer** | [docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html) |
 | **IAM Policy Reference** | [docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html) |
+| **Condition Keys (aws:CalledVia)** | [docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_condition-keys.html) |
 
 ### Additional Resources
 
@@ -454,6 +493,15 @@ echo "Cleanup complete!"
 4. **Start restrictive**, add permissions as needed
 5. **Use IAM Access Analyzer** to identify unused permissions
 6. **Enable MFA** on all accounts, especially root
+7. **Use aws:CalledVia** to enforce Infrastructure as Code access patterns
+
+### Lab Examples in This Folder
+
+| File | Description |
+|------|-------------|
+| [ACCESS_KEY_EXAMPLE.md](./ACCESS_KEY_EXAMPLE.md) | How to create and use IAM access keys |
+| [CALLEDVIA_CONDITION_EXAMPLE.md](./CALLEDVIA_CONDITION_EXAMPLE.md) | Restrict access to service-only calls |
+| [terraform/](./terraform/) | Terraform IaC to create all demo users |
 
 ### Permission Recommendation by Role
 
