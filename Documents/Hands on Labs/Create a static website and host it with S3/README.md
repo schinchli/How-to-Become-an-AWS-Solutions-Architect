@@ -23,6 +23,10 @@ A production-ready static website hosted on **Amazon S3** with **CloudFront CDN*
 
 ---
 
+> **Advanced Users**: Prefer Infrastructure as Code? Deploy this architecture using Terraform for version-controlled, reproducible deployments. **[Click here to read more →](https://github.com/schinchli/ArchitectingonAWS/issues/1)**
+
+---
+
 ## Architecture
 
 ```mermaid
