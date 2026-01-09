@@ -1,20 +1,324 @@
-# IAM 101: User Access Matrix and Best Practices
+# IAM 101: Complete Guide to AWS Identity and Access Management
 
-> Understanding AWS IAM users, permissions, and the principle of least privilege
-
----
-
-## Overview
-
-This lab creates 5 IAM users with different permission levels to demonstrate:
-- Principle of Least Privilege
-- Service-specific vs Administrative access
-- When to use each type of user
-- Root account best practices
+> A hands-on lab for understanding AWS IAM users, permissions, root account best practices, and the principle of least privilege
 
 ---
 
-## Quick Start (Terraform)
+## Table of Contents
+
+1. [What is AWS IAM?](#what-is-aws-iam)
+2. [IAM Users and Permissions](#iam-users-and-permissions)
+3. [When to Use Root User](#when-to-use-root-user)
+4. [Principle of Least Privilege](#principle-of-least-privilege)
+5. [What We Built in This Lab](#what-we-built-in-this-lab)
+6. [Terraform Deployment](#terraform-deployment)
+7. [Cleanup / Decommission](#cleanup--decommission)
+8. [AWS Documentation Links](#aws-documentation-links)
+
+---
+
+## What is AWS IAM?
+
+**AWS Identity and Access Management (IAM)** is a web service that helps you securely control access to AWS resources. With IAM, you can centrally manage:
+
+- **Authentication** - Who can sign in (identity)
+- **Authorization** - What they can do (permissions)
+
+### IAM Components
+
+| Component | Description | Example |
+|-----------|-------------|---------|
+| **Users** | Individual identities with long-term credentials | `developer-john`, `admin-sarah` |
+| **Groups** | Collection of users with shared permissions | `developers`, `admins` |
+| **Roles** | Temporary identities assumable by users/services | `EC2-S3-Access-Role` |
+| **Policies** | JSON documents defining permissions | `AmazonS3FullAccess` |
+
+---
+
+## IAM Users and Permissions
+
+### What is an IAM User?
+
+An **IAM user** is an identity within your AWS account that represents a person or application. Each user has:
+
+- A unique name within the account
+- Security credentials (password and/or access keys)
+- Permissions defined by attached policies
+
+### Types of Credentials
+
+| Credential Type | Use Case | Best Practice |
+|-----------------|----------|---------------|
+| **Console Password** | AWS Management Console login | Enable MFA, enforce strong passwords |
+| **Access Keys** | CLI/SDK/API access | Rotate regularly, never commit to code |
+| **SSH Keys** | CodeCommit access | Use for git operations |
+
+### Permission Types
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                    IAM PERMISSION TYPES                         │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  ┌─────────────────────┐    ┌─────────────────────┐            │
+│  │  Identity-Based     │    │  Resource-Based     │            │
+│  │  Policies           │    │  Policies           │            │
+│  │                     │    │                     │            │
+│  │  Attached to:       │    │  Attached to:       │            │
+│  │  • Users            │    │  • S3 Buckets       │            │
+│  │  • Groups           │    │  • SQS Queues       │            │
+│  │  • Roles            │    │  • KMS Keys         │            │
+│  └─────────────────────┘    └─────────────────────┘            │
+│                                                                 │
+│  ┌─────────────────────┐    ┌─────────────────────┐            │
+│  │  AWS Managed        │    │  Customer Managed   │            │
+│  │  Policies           │    │  Policies           │            │
+│  │                     │    │                     │            │
+│  │  • Pre-built by AWS │    │  • Created by you   │            │
+│  │  • Common use cases │    │  • Specific to your │            │
+│  │  • Cannot modify    │    │    requirements     │            │
+│  └─────────────────────┘    └─────────────────────┘            │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### IAM Users vs IAM Roles
+
+| Aspect | IAM Users | IAM Roles |
+|--------|-----------|-----------|
+| **Credentials** | Long-term (password, access keys) | Temporary (auto-rotated) |
+| **Use Case** | Human users needing persistent access | Applications, services, cross-account |
+| **Best For** | Individual developers, admins | EC2, Lambda, federated users |
+| **Security** | Requires manual key rotation | Automatic credential rotation |
+
+**AWS Recommendation:** Use IAM roles for workloads and federated access. Use IAM users only when long-term credentials are absolutely required.
+
+---
+
+## When to Use Root User
+
+### What is the Root User?
+
+The **root user** is the identity that has complete access to all AWS services and resources in the account. It's created when you first create an AWS account using an email address and password.
+
+### Root User Best Practices
+
+| Practice | Why |
+|----------|-----|
+| **Enable MFA** | Protects against credential theft |
+| **Don't create access keys** | Reduces risk of key exposure |
+| **Use only when required** | Limits exposure of root credentials |
+| **Store credentials securely** | Prevent unauthorized access |
+| **Monitor root activity** | CloudTrail logs all root actions |
+
+### Tasks That REQUIRE Root User
+
+Based on [AWS Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-tasks.html), only root can:
+
+#### Account Management
+- Change account settings (email, root password)
+- Close your AWS account
+- Restore IAM user permissions (if admin locked out)
+
+#### Billing
+- Activate IAM access to Billing console
+- View certain tax invoices (VAT)
+
+#### AWS GovCloud
+- Sign up for AWS GovCloud (US)
+- Request GovCloud root user access keys
+
+#### Amazon S3
+- Configure MFA Delete on S3 bucket
+- Edit/delete S3 bucket policy that denies all principals
+
+#### Amazon SQS
+- Edit/delete SQS policy that denies all principals
+
+#### Other Services
+- Register as seller in Reserved Instance Marketplace
+- Recover unmanageable AWS KMS key
+- Link AWS account to Mechanical Turk
+
+### When NOT to Use Root
+
+**Never use root for:**
+- Day-to-day administrative tasks
+- Creating or managing resources
+- Running applications
+- Any task an IAM user/role can do
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                     ROOT USER DECISION TREE                     │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Is this task on the "Root Required" list?                      │
+│           │                                                     │
+│     ┌─────┴─────┐                                               │
+│     │           │                                               │
+│    YES          NO                                              │
+│     │           │                                               │
+│     ▼           ▼                                               │
+│  Use Root    Use IAM User/Role                                  │
+│  (with MFA)  (with least privilege)                             │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## Principle of Least Privilege
+
+### Definition
+
+The **Principle of Least Privilege** means granting only the minimum permissions necessary for users, roles, and services to perform their required tasks—nothing more.
+
+### Why It Matters
+
+| Risk Without Least Privilege | Impact |
+|------------------------------|--------|
+| Compromised credentials | Attacker gains excessive access |
+| Accidental deletions | User deletes critical resources |
+| Compliance violations | Fails SOC2, HIPAA, PCI audits |
+| Audit complexity | Hard to track who did what |
+
+### Implementation Strategy
+
+#### 1. Start with Zero Permissions
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": []
+}
+```
+Add permissions incrementally as needed.
+
+#### 2. Use AWS Managed Policies as Starting Point
+- `AmazonS3ReadOnlyAccess` instead of `AmazonS3FullAccess`
+- `AmazonEC2ReadOnlyAccess` for monitoring-only users
+
+#### 3. Create Custom Policies for Specific Needs
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-specific-bucket",
+        "arn:aws:s3:::my-specific-bucket/*"
+      ]
+    }
+  ]
+}
+```
+
+#### 4. Use IAM Access Analyzer
+- Generates least-privilege policies from CloudTrail logs
+- Identifies unused permissions
+- Validates policies against best practices
+
+#### 5. Add Conditions for Extra Security
+```json
+{
+  "Condition": {
+    "IpAddress": {"aws:SourceIp": "203.0.113.0/24"},
+    "Bool": {"aws:SecureTransport": "true"}
+  }
+}
+```
+
+### Least Privilege Hierarchy
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                  PERMISSION LEVELS (Least to Most)              │
+├─────────────────────────────────────────────────────────────────┤
+│                                                                 │
+│  Level 1: Read-Only          ██░░░░░░░░░░░░░░░░░░  10%         │
+│           View resources, no changes                            │
+│                                                                 │
+│  Level 2: Service-Specific   ██████░░░░░░░░░░░░░░  30%         │
+│           Full access to ONE service (our user1-3)              │
+│                                                                 │
+│  Level 3: Power User         ████████████░░░░░░░░  60%         │
+│           Most services, no IAM                                 │
+│                                                                 │
+│  Level 4: Administrator      ██████████████████░░  90%         │
+│           All services (our user4)                              │
+│                                                                 │
+│  Level 5: Admin + Billing    ████████████████████  95%         │
+│           All services + cost (our user5)                       │
+│                                                                 │
+│  Level 6: Root               ████████████████████  100%        │
+│           Everything + account controls                         │
+│                                                                 │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## What We Built in This Lab
+
+### Overview
+
+In this lab, we created **5 IAM users** demonstrating different permission levels:
+
+| User | Role | AWS Policy | Permission Scope |
+|------|------|------------|------------------|
+| **user1** | S3 Administrator | `AmazonS3FullAccess` | S3 buckets and objects only |
+| **user2** | EC2 Administrator | `AmazonEC2FullAccess` | EC2, VPC, EBS only |
+| **user3** | DynamoDB Administrator | `AmazonDynamoDBFullAccess` | DynamoDB tables only |
+| **user4** | Full Administrator | `AdministratorAccess` | All AWS services |
+| **user5** | Super Administrator | `AdministratorAccess` + `Billing` | All services + billing |
+
+### Access Matrix
+
+| Service | user1 | user2 | user3 | user4 | user5 | Root |
+|---------|:-----:|:-----:|:-----:|:-----:|:-----:|:----:|
+| S3 | ✅ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| EC2 | ❌ | ✅ | ❌ | ✅ | ✅ | ✅ |
+| DynamoDB | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
+| Lambda | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| IAM | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| All Services | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Billing | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ |
+| Close Account | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ |
+
+### Security Configuration
+
+| Setting | Value | Reason |
+|---------|-------|--------|
+| Console Access | Disabled | Programmatic access only |
+| Access Keys | Not created | Security best practice |
+| MFA | Not configured | Demo environment |
+
+### Why This Demonstrates Least Privilege
+
+1. **user1-3**: Can ONLY manage their specific service
+   - If user1's credentials leak → attacker can only access S3
+   - Cannot escalate to other services
+
+2. **user4**: Full admin but NO billing access
+   - Can manage all services
+   - Cannot view costs or make purchases
+
+3. **user5**: Admin WITH billing
+   - Only for users who need cost visibility
+   - Still cannot close account or change root email
+
+4. **Root**: Reserved for account-level tasks only
+
+---
+
+## Terraform Deployment
+
+### Quick Start
 
 ```bash
 # 1. Navigate to terraform directory
@@ -22,300 +326,48 @@ cd terraform
 
 # 2. Configure variables
 cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars if needed
 
 # 3. Deploy
 terraform init
-terraform plan
-terraform apply
+terraform plan    # Shows 11 resources
+terraform apply   # Type 'yes'
 
-# 4. View created users
+# 4. View outputs
 terraform output user_names
-
-# 5. Cleanup (when done)
-terraform destroy
+terraform output access_matrix
 ```
-
----
-
-## What Gets Created
-
-| User | Role | AWS Managed Policy | Access Level |
-|------|------|-------------------|--------------|
-| user1 | S3 Administrator | AmazonS3FullAccess | S3 Only |
-| user2 | EC2 Administrator | AmazonEC2FullAccess | EC2 Only |
-| user3 | DynamoDB Administrator | AmazonDynamoDBFullAccess | DynamoDB Only |
-| user4 | Full Administrator | AdministratorAccess | All Services |
-| user5 | Super Administrator | AdministratorAccess + Billing | All + Billing |
-
-**Note:** No console access is enabled. Users have programmatic access only.
-
----
-
-## Access Matrix
-
-### Service Access by User
-
-| Service / Permission | user1 | user2 | user3 | user4 | user5 | Root |
-|---------------------|:-----:|:-----:|:-----:|:-----:|:-----:|:----:|
-| **S3** (Buckets, Objects) | Full | - | - | Full | Full | Full |
-| **EC2** (Instances, VPC, EBS) | - | Full | - | Full | Full | Full |
-| **DynamoDB** (Tables, Items) | - | - | Full | Full | Full | Full |
-| **Lambda** | - | - | - | Full | Full | Full |
-| **RDS** | - | - | - | Full | Full | Full |
-| **IAM** (Users, Roles, Policies) | - | - | - | Full | Full | Full |
-| **CloudFormation** | - | - | - | Full | Full | Full |
-| **All Other AWS Services** | - | - | - | Full | Full | Full |
-| **Billing & Cost Management** | - | - | - | - | Full | Full |
-| **Account Settings** | - | - | - | - | - | Full |
-| **Close AWS Account** | - | - | - | - | - | Full |
-| **Change Root Email** | - | - | - | - | - | Full |
-
-**Legend:** Full = Full Access | - = No Access
-
----
-
-## When to Use Each User
-
-### user1 (S3 Administrator)
-
-**Use When:**
-- Managing S3 buckets and objects
-- Setting up static website hosting
-- Configuring S3 lifecycle policies
-- Managing S3 replication
-
-**Example Tasks:**
-```bash
-# Create bucket
-aws s3 mb s3://my-bucket
-
-# Upload files
-aws s3 cp file.txt s3://my-bucket/
-
-# List buckets
-aws s3 ls
-```
-
----
-
-### user2 (EC2 Administrator)
-
-**Use When:**
-- Launching and managing EC2 instances
-- Configuring VPCs, subnets, security groups
-- Managing EBS volumes and snapshots
-
-**Example Tasks:**
-```bash
-# Launch instance
-aws ec2 run-instances --image-id ami-xxx --instance-type t2.micro
-
-# List instances
-aws ec2 describe-instances
-
-# Stop instance
-aws ec2 stop-instances --instance-ids i-xxx
-```
-
----
-
-### user3 (DynamoDB Administrator)
-
-**Use When:**
-- Creating and managing DynamoDB tables
-- Configuring read/write capacity
-- Setting up DynamoDB streams
-
-**Example Tasks:**
-```bash
-# Create table
-aws dynamodb create-table --table-name MyTable ...
-
-# List tables
-aws dynamodb list-tables
-
-# Put item
-aws dynamodb put-item --table-name MyTable --item '{"id":{"S":"1"}}'
-```
-
----
-
-### user4 (Full Administrator)
-
-**Use When:**
-- Managing multiple AWS services
-- Setting up cross-service integrations
-- Creating IAM roles and policies
-- Day-to-day administration
-
-**Cannot Do:**
-- Access billing information
-- Modify account settings
-
----
-
-### user5 (Super Administrator)
-
-**Use When:**
-- Need full administrative access PLUS billing
-- Managing costs and budgets
-- Viewing invoices and payment methods
-
-**Cannot Do:**
-- Close AWS account
-- Change root email/password
-- Enable/disable regions
-
----
-
-### Root Account
-
-**Use ONLY When:**
-- Changing root account email or password
-- Changing AWS support plan
-- Closing the AWS account
-- Restoring IAM user permissions (if locked out)
-- Enabling MFA on root
-- Creating first IAM admin user
-
-**Best Practices:**
-- Enable MFA on root account
-- Do NOT create access keys for root
-- Use root only for tasks that require it
-- Lock away root credentials securely
-
----
-
-## Principle of Least Privilege
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                     PERMISSION HIERARCHY                        │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  Root Account        ████████████████████████████████  100%     │
-│  (Account Owner)     All permissions + Account controls         │
-│                                                                 │
-│  user5 (Super)       ██████████████████████████████░░  ~95%     │
-│                      Admin + Billing (no account controls)      │
-│                                                                 │
-│  user4 (Admin)       ████████████████████████████░░░░  ~85%     │
-│                      All services (no billing)                  │
-│                                                                 │
-│  user1-3 (Service)   ██████░░░░░░░░░░░░░░░░░░░░░░░░░░  ~15%     │
-│                      Single service only                        │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-### Why Least Privilege?
-
-| Benefit | Description |
-|---------|-------------|
-| **Security** | Limits blast radius if credentials are compromised |
-| **Compliance** | Meets regulatory requirements (SOC2, HIPAA, PCI) |
-| **Auditability** | Clear accountability for actions |
-| **Simplicity** | Easier to troubleshoot permission issues |
-
----
-
-## Terraform Configuration
 
 ### Files Structure
 
 ```
 terraform/
-├── main.tf                  # User and policy resources
-├── variables.tf             # Input variables
-├── outputs.tf               # Output values
+├── main.tf                  # IAM users and policy attachments
+├── variables.tf             # Configurable options
+├── outputs.tf               # User list and access matrix
 ├── terraform.tfvars.example # Example configuration
-└── .gitignore              # Ignore sensitive files
+└── .gitignore              # Excludes sensitive files
 ```
 
-### Variables
+### Configuration Options
 
 | Variable | Default | Description |
 |----------|---------|-------------|
 | `region` | us-east-1 | AWS region |
-| `environment` | training | Environment tag |
-| `user_prefix` | "" | Prefix for user names |
-| `create_access_keys` | false | Create programmatic access keys |
+| `user_prefix` | "" | Prefix for user names (e.g., "demo-") |
+| `create_access_keys` | false | Generate access keys (sensitive) |
 | `create_user_group` | false | Group all users together |
 
-### Outputs
+### Resources Created
 
-After deployment, view outputs with:
-
-```bash
-# List all users created
-terraform output user_names
-
-# View full access matrix
-terraform output access_matrix
-
-# View access keys (if created)
-terraform output -json access_keys
-```
+| Resource Type | Count |
+|---------------|-------|
+| IAM Users | 5 |
+| Policy Attachments | 6 |
+| **Total** | **11** |
 
 ---
 
-## Deployment Guide
-
-### Prerequisites
-
-```bash
-# Required tools
-terraform --version  # v1.0+
-aws --version        # AWS CLI v2
-
-# Verify AWS credentials
-aws sts get-caller-identity
-```
-
-### Step 1: Initialize
-
-```bash
-cd terraform
-terraform init
-```
-
-### Step 2: Configure
-
-```bash
-cp terraform.tfvars.example terraform.tfvars
-# Edit terraform.tfvars as needed
-```
-
-### Step 3: Plan
-
-```bash
-terraform plan
-```
-
-Expected: 5 users + 6 policy attachments = 11 resources
-
-### Step 4: Apply
-
-```bash
-terraform apply
-```
-
-Type `yes` when prompted.
-
-### Step 5: Verify
-
-```bash
-# List created users
-terraform output user_names
-
-# Or via AWS CLI
-aws iam list-users --query 'Users[?contains(UserName, `user`)].UserName'
-```
-
----
-
-## Decommission / Cleanup
+## Cleanup / Decommission
 
 ### Option 1: Terraform Destroy (Recommended)
 
@@ -324,117 +376,101 @@ cd terraform
 terraform destroy
 ```
 
-Type `yes` when prompted. This will:
-- Delete all 5 IAM users
-- Detach all policies
-- Delete access keys (if created)
-- Delete user group (if created)
+Type `yes` when prompted. Deletes all users and policies.
 
-### Option 2: AWS CLI Cleanup
+### Option 2: AWS CLI
 
 ```bash
-# Delete all lab users
+#!/bin/bash
 for user in user1 user2 user3 user4 user5; do
   echo "Deleting $user..."
 
   # Delete access keys
-  keys=$(aws iam list-access-keys --user-name $user --query 'AccessKeyMetadata[].AccessKeyId' --output text 2>/dev/null)
-  for key in $keys; do
+  for key in $(aws iam list-access-keys --user-name $user \
+    --query 'AccessKeyMetadata[].AccessKeyId' --output text 2>/dev/null); do
     aws iam delete-access-key --user-name $user --access-key-id $key
   done
 
-  # Detach all policies
-  policies=$(aws iam list-attached-user-policies --user-name $user --query 'AttachedPolicies[].PolicyArn' --output text 2>/dev/null)
-  for policy in $policies; do
+  # Detach policies
+  for policy in $(aws iam list-attached-user-policies --user-name $user \
+    --query 'AttachedPolicies[].PolicyArn' --output text 2>/dev/null); do
     aws iam detach-user-policy --user-name $user --policy-arn $policy
   done
 
   # Delete user
-  aws iam delete-user --user-name $user 2>/dev/null && echo "Deleted $user" || echo "$user not found"
+  aws iam delete-user --user-name $user
 done
-
 echo "Cleanup complete!"
 ```
 
 ### Option 3: AWS Console
 
-1. Go to IAM Console → Users
-2. Select each user (user1-user5)
-3. Click "Delete user"
+1. Go to **IAM Console** → **Users**
+2. Select users (user1-user5)
+3. Click **Delete**
 4. Confirm deletion
 
 ---
 
-## Security Considerations
+## AWS Documentation Links
 
-### What This Lab Does NOT Do
+### Official AWS Documentation
 
-| Security Feature | Status | Reason |
-|-----------------|--------|--------|
-| Console login | Disabled | Programmatic access only |
-| Access keys | Not created by default | Security best practice |
-| MFA | Not configured | Demo purposes only |
-| Password policy | N/A | No console access |
+| Topic | Link |
+|-------|------|
+| **IAM User Guide** | [docs.aws.amazon.com/IAM/latest/UserGuide/](https://docs.aws.amazon.com/IAM/latest/UserGuide/) |
+| **IAM Best Practices** | [docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html) |
+| **Root User Tasks** | [docs.aws.amazon.com/IAM/latest/UserGuide/root-user-tasks.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-tasks.html) |
+| **Root User Best Practices** | [docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/root-user-best-practices.html) |
+| **Least Privilege** | [docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege) |
+| **IAM Access Analyzer** | [docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/what-is-access-analyzer.html) |
+| **IAM Policy Reference** | [docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html](https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies.html) |
 
-### Production Recommendations
+### Additional Resources
 
-For production environments:
+| Resource | Link |
+|----------|------|
+| **IAM Policy Simulator** | [policysim.aws.amazon.com](https://policysim.aws.amazon.com/) |
+| **AWS Managed Policies** | [docs.aws.amazon.com/aws-managed-policy/latest/reference/policy-list.html](https://docs.aws.amazon.com/aws-managed-policy/latest/reference/policy-list.html) |
+| **Security Best Practices** | [docs.aws.amazon.com/wellarchitected/latest/security-pillar/](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/) |
+| **IAM Identity Center** | [docs.aws.amazon.com/singlesignon/latest/userguide/](https://docs.aws.amazon.com/singlesignon/latest/userguide/) |
 
-1. **Enable MFA** for all users
-2. **Use IAM Roles** instead of users where possible
-3. **Rotate access keys** regularly
-4. **Use AWS Organizations** for multi-account setups
-5. **Enable CloudTrail** for audit logging
-6. **Use IAM Access Analyzer** to review permissions
+### AWS Training
 
----
-
-## Quick Reference
-
-### Common AWS CLI Commands
-
-```bash
-# List all users
-aws iam list-users
-
-# View user's policies
-aws iam list-attached-user-policies --user-name <username>
-
-# Create access key
-aws iam create-access-key --user-name <username>
-
-# Delete access key
-aws iam delete-access-key --user-name <username> --access-key-id <key-id>
-
-# Enable console access
-aws iam create-login-profile --user-name <username> --password <password> --password-reset-required
-
-# Check for console access
-aws iam get-login-profile --user-name <username>
-```
+| Course | Link |
+|--------|------|
+| **AWS Security Fundamentals** | [aws.amazon.com/training/learn-about/security/](https://aws.amazon.com/training/learn-about/security/) |
+| **IAM Foundations** | [explore.skillbuilder.aws](https://explore.skillbuilder.aws/learn/course/internal/view/elearning/120/introduction-to-aws-identity-and-access-management-iam) |
 
 ---
 
 ## Summary
 
-| User | Scope | Use Case | Risk Level |
-|------|-------|----------|------------|
-| user1-3 | Single Service | Day-to-day service tasks | Low |
-| user4 | All Services | General administration | Medium |
-| user5 | All + Billing | Cost management + admin | High |
-| Root | Account Level | Critical tasks only | Critical |
+### Key Takeaways
 
-**Golden Rule:** Always use the user with the LEAST permissions needed for the task.
+1. **IAM Users** have long-term credentials; use **IAM Roles** for applications
+2. **Root User** should only be used for account-level tasks that require it
+3. **Principle of Least Privilege** = minimum permissions needed for the task
+4. **Start restrictive**, add permissions as needed
+5. **Use IAM Access Analyzer** to identify unused permissions
+6. **Enable MFA** on all accounts, especially root
 
----
+### Permission Recommendation by Role
 
-## Related Resources
+| Role Type | Recommended Approach |
+|-----------|---------------------|
+| Developers | Service-specific access (like user1-3) |
+| DevOps | Power user or scoped admin |
+| Administrators | Full admin (like user4) |
+| Finance/Billing | Admin + Billing (like user5) |
+| Account Management | Root user (rarely, with MFA) |
 
-- [AWS IAM Best Practices](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html)
-- [Principle of Least Privilege](https://docs.aws.amazon.com/IAM/latest/UserGuide/best-practices.html#grant-least-privilege)
-- [IAM Policy Simulator](https://policysim.aws.amazon.com/)
-- [AWS Managed Policies Reference](https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies_managed-vs-inline.html)
+### Golden Rule
+
+> **Always use the user with the LEAST permissions needed for the task.**
 
 ---
 
 **Created**: January 2026 | **Terraform**: v1.0+ | **AWS Provider**: v5.0+
+
+**Sources**: [AWS IAM Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/), [AWS Security Best Practices](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/)
