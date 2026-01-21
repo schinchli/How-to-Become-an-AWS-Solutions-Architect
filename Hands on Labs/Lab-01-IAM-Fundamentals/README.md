@@ -279,7 +279,7 @@ The `aws:CalledVia` condition key restricts access based on **which AWS service 
 - Direct `aws s3 ls` → ❌ Denied
 - CloudFormation creating S3 bucket → ✅ Allowed
 
-See [CALLEDVIA_CONDITION_EXAMPLE.md](./CALLEDVIA_CONDITION_EXAMPLE.md) for full demo.
+See [CALLEDVIA_CONDITION_EXAMPLE.md](./docs/CALLEDVIA_CONDITION_EXAMPLE.md) for full demo.
 
 ### Least Privilege Hierarchy
 
@@ -511,12 +511,12 @@ echo "Cleanup complete!"
 6. **Enable MFA** on all accounts, especially root
 7. **Use aws:CalledVia** to enforce Infrastructure as Code access patterns
 
-### Lab Examples in This Folder
+### Additional Resources
 
 | File | Description |
 |------|-------------|
-| [ACCESS_KEY_EXAMPLE.md](./ACCESS_KEY_EXAMPLE.md) | How to create and use IAM access keys |
-| [CALLEDVIA_CONDITION_EXAMPLE.md](./CALLEDVIA_CONDITION_EXAMPLE.md) | Restrict access to service-only calls |
+| [ACCESS_KEY_EXAMPLE.md](./docs/ACCESS_KEY_EXAMPLE.md) | How to create and use IAM access keys |
+| [CALLEDVIA_CONDITION_EXAMPLE.md](./docs/CALLEDVIA_CONDITION_EXAMPLE.md) | Restrict access to service-only calls |
 | [terraform/](./terraform/) | Terraform IaC to create all demo users |
 
 ### Permission Recommendation by Role
