@@ -1,6 +1,16 @@
 # IAM 101: Complete Guide to AWS Identity and Access Management
 
-> A hands-on lab for understanding AWS IAM users, permissions, root account best practices, and the principle of least privilege
+[![AWS](https://img.shields.io/badge/AWS-IAM-FF9900?logo=amazon-aws)](https://aws.amazon.com/iam/)
+[![Service](https://img.shields.io/badge/Service-Identity%20%26%20Access-blue)](https://docs.aws.amazon.com/IAM/latest/UserGuide/)
+[![Difficulty](https://img.shields.io/badge/Difficulty-Beginner-brightgreen)]()
+[![Duration](https://img.shields.io/badge/Duration-20%20mins-lightgrey)]()
+
+> **Architecting on AWS** - Hands-on Lab Series
+> **Level:** Beginner | **Time:** 20 minutes | **Cost:** Free (IAM has no charges)
+
+---
+
+Understanding IAM is foundational to every AWS deployment. This lab teaches you how to securely manage identities, implement least-privilege access, and avoid common security pitfalls that lead to breaches.
 
 ---
 
@@ -525,6 +535,18 @@ echo "Cleanup complete!"
 
 ---
 
-**Created**: January 2026 | **Terraform**: v1.0+ | **AWS Provider**: v5.0+
+---
+
+**Don't just read—build.** Deploy this lab, experiment with different permission configurations, intentionally test access boundaries, and develop a practical understanding of AWS IAM that will serve you in every future AWS project.
+
+---
+
+## License
+
+MIT License - Free to use for learning and commercial projects.
+
+---
+
+Created by **[Shashank Chinchli](https://www.linkedin.com/in/shashankk/)**, an AWS Solutions Architect and Golden Jacket Holder, as part of the *Architecting on AWS Hands-on Labs Series*.
 
 **Sources**: [AWS IAM Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/), [AWS Security Best Practices](https://docs.aws.amazon.com/wellarchitected/latest/security-pillar/)

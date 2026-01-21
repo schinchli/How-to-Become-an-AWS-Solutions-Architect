@@ -1,8 +1,21 @@
-# WordPress on AWS ECS with Enhanced Security
+# Deploying WordPress CMS on AWS ECS
 
-> **Production-ready WordPress deployment on AWS ECS Fargate with private subnet architecture**
+[![AWS](https://img.shields.io/badge/AWS-Container%20Services-FF9900?logo=amazon-aws)](https://aws.amazon.com/ecs/)
+[![ECS](https://img.shields.io/badge/Service-ECS%20Fargate-blue)](https://aws.amazon.com/fargate/)
+[![ALB](https://img.shields.io/badge/Service-Application%20Load%20Balancer-green)](https://aws.amazon.com/elasticloadbalancing/)
+[![Difficulty](https://img.shields.io/badge/Difficulty-Intermediate-yellow)]()
+[![Duration](https://img.shields.io/badge/Duration-45%20mins-lightgrey)]()
 
-## 🏗️ Architecture Overview
+> **Architecting on AWS** - Hands-on Lab Series
+> **Level:** Intermediate | **Time:** 45 minutes | **Cost:** ~$30-50/month
+
+---
+
+Production-ready WordPress deployment on AWS ECS Fargate with enterprise-grade security features including private subnets, dedicated security groups, and NAT Gateway for controlled internet access.
+
+---
+
+## Architecture Overview
 
 This project demonstrates deploying a secure WordPress application on AWS ECS Fargate with enterprise-grade security features including private subnets, dedicated security groups, and NAT Gateway for controlled internet access.
 
@@ -520,14 +533,18 @@ aws ec2 describe-route-tables --region us-east-1
 - [AWS CloudFront Documentation](https://docs.aws.amazon.com/cloudfront/)
 - [AWS WAF Documentation](https://docs.aws.amazon.com/waf/)
 
-## 📄 License
+---
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
+**Don't just read—build.** Deploy this lab, experiment with container scaling, test failover scenarios, and develop a practical understanding of containerized deployments that power modern enterprise applications.
 
 ---
 
-**⚠️ Important**: This configuration is for demonstration purposes. For production use, implement additional security measures, monitoring, and backup strategies as outlined in the security best practices section.
+## License
+
+MIT License - Free to use for learning and commercial projects.
+
+---
+
+Created by **[Shashank Chinchli](https://www.linkedin.com/in/shashankk/)**, an AWS Solutions Architect and Golden Jacket Holder, as part of the *Architecting on AWS Hands-on Labs Series*.
+
+**Note**: This configuration is for demonstration purposes. For production use, implement additional security measures, monitoring, and backup strategies as outlined in the security best practices section.

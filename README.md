@@ -1,91 +1,101 @@
-# Hands-on AWS Labs
+# Architecting on AWS
 
-> **Production-ready AWS Architecture Projects and Learning Labs**
+**Hands-On Labs to Master AWS Solutions Architecture**
 
-This repository contains comprehensive hands-on labs for learning AWS services with real-world implementations.
+[![AWS](https://img.shields.io/badge/AWS-Solutions%20Architecture-FF9900?logo=amazon-aws)](https://aws.amazon.com/architecture/)
+[![Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-blue)](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
+[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-## 🚀 Available Labs
+---
 
-### [Deploying WordPress CMS On ECS](./Deploying%20WordPress%20CMS%20On%20ECS/)
+## Why This Repository?
 
-A complete hands-on lab for deploying WordPress on AWS ECS Fargate with comprehensive security features:
+**Architecting on AWS** is a hands-on learning path for developers, DevOps engineers, and cloud professionals preparing for the **AWS Solutions Architect Associate** exam or building production-ready AWS skills.
 
-- **🏗️ Architecture**: ECS Fargate + Private Subnets + NAT Gateway + ALB
-- **🔒 Security**: Private subnet isolation, dedicated security groups, least privilege access
-- **🚀 Automation**: Multi-region deployment scripts with validation
-- **📚 Learning**: Complete AWS ECS learning guide for beginners
-- **🛡️ Security Audit**: AWS Well-Architected Framework compliance
+Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html).
 
-**Key Learning Outcomes:**
-- Master AWS ECS container orchestration
-- Understand VPC networking and security groups
-- Implement private subnet architecture with NAT Gateway
-- Apply AWS security best practices
-- Deploy production-ready applications
-- Troubleshoot real-world issues
+---
 
-**Perfect for:**
-- AWS beginners learning containerization
-- DevOps engineers implementing ECS
-- Solutions architects designing secure applications
-- Students preparing for AWS certifications
+## Learning Approach
 
-## 🎯 Learning Approach
+- **Deploy real AWS infrastructure** — not simulations
+- **Production-grade patterns** — used in enterprise environments
+- **Cost-transparent** — pricing breakdowns and cleanup scripts included
+- **Well-Architected aligned** — follows AWS best practices
 
-### Hands-on Experience
-- Real working applications you can deploy and test
-- Step-by-step instructions with explanations
-- Complete automation scripts for multiple environments
-- Comprehensive troubleshooting guides
+---
 
-### Production-Ready
-- AWS Well-Architected Framework compliance
-- Security best practices implementation
-- Multi-region deployment capability
-- Cost optimization strategies
+## Available Labs
 
-### Beginner-Friendly
-- No prior AWS experience required
-- Complete learning guides with fundamentals
-- Visual diagrams and explanations
-- Progressive skill building
+| # | Lab | Services | Duration | Level |
+|---|-----|----------|----------|-------|
+| 1 | [IAM 101: Complete Guide to AWS Identity and Access Management](Hands%20on%20Labs/IAM%20101/README.md) | IAM, Policies, Roles | 20 min | Beginner |
+| 2 | [Host a Static Website on AWS S3 with CloudFront CDN](Hands%20on%20Labs/How%20to%20Host%20a%20Static%20Website%20on%20AWS%20S3%20with%20CloudFront%20CDN%20-%20Complete%202026%20Guide/README.md) | S3, CloudFront, ACM | 30 min | Beginner |
+| 3 | [Deploying WordPress CMS on ECS](Hands%20on%20Labs/Deploying%20WordPress%20CMS%20On%20ECS/README.md) | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
+| 4 | [Securing RDS Credentials with KMS and Secrets Manager](Hands%20on%20Labs/Securing%20RDS%20Database%20Credentials%20with%20AWS%20KMS%20and%20Secrets%20Manager%20(Hands-On%2C%20Zero-Downtime%20Rotation)/README.md) | KMS, Secrets Manager, RDS, Lambda | 30 min | Intermediate |
 
-## 🛠️ Prerequisites
+---
 
-- AWS CLI configured with appropriate permissions
-- Basic understanding of command line operations
+## Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/schinchli/ArchitectingonAWS.git
+
+# Navigate to a lab
+cd "Hands on Labs/IAM 101"
+
+# Follow the README for step-by-step instructions
+```
+
+---
+
+## Who This Is For
+
+| Role | What You'll Gain |
+|------|------------------|
+| **AWS Certification Candidates** | Hands-on prep for Solutions Architect Associate |
+| **Cloud Engineers** | Production-ready deployment patterns |
+| **DevOps Professionals** | Infrastructure automation and security practices |
+| **Developers** | Understanding of AWS services and architecture |
+
+---
+
+## Prerequisites
+
+- AWS CLI installed and configured (`aws --version`)
+- AWS account with appropriate permissions
+- Basic command line knowledge
 - Git for cloning repositories
 
-## 📚 Getting Started
+---
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/schinchli/ArchitectingonAWS.git
-   cd ArchitectingonAWS
-   ```
+## Security Standards
 
-2. **Choose a lab**
-   ```bash
-   cd "Deploying WordPress CMS On ECS"
-   ```
+All labs follow strict security practices:
 
-3. **Start learning**
-   - Read `AWS_ECS_LEARNING_GUIDE.md` for comprehensive AWS fundamentals
-   - Follow `README.md` for step-by-step deployment
-   - Use automation scripts for quick deployment
-   - Review security audit and best practices
+- No hardcoded credentials — secrets generated dynamically
+- Least-privilege IAM policies
+- Encryption at rest and in transit
+- [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) alignment
+- Complete cleanup scripts to avoid unexpected charges
 
-## 🔒 Security Notice
+---
 
-All labs in this repository:
-- ✅ **No AWS credentials exposed** - All sensitive data sanitized
-- ✅ **Production-ready security** - Best practices implemented
-- ✅ **Template-based configs** - Easy customization for your environment
-- ✅ **Security documentation** - Comprehensive security guides included
+## AWS References
 
-## 🤝 Contributing
+| Resource | Link |
+|----------|------|
+| AWS Architecture Center | [Documentation](https://aws.amazon.com/architecture/) |
+| Well-Architected Framework | [Documentation](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html) |
+| AWS Security Best Practices | [Whitepaper](https://docs.aws.amazon.com/whitepapers/latest/aws-security-best-practices/welcome.html) |
+| AWS Solutions Library | [Solutions](https://aws.amazon.com/solutions/) |
 
-Contributions are welcome! Please:
+---
+
+## Contributing
+
+Found an issue or want to improve a lab?
 
 1. Fork the repository
 2. Create a feature branch
@@ -93,17 +103,23 @@ Contributions are welcome! Please:
 4. Ensure no sensitive data is committed
 5. Submit a pull request
 
-## 📄 License
+---
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+## License
 
-## 🔗 Resources
-
-- [AWS Architecture Center](https://aws.amazon.com/architecture/)
-- [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
-- [AWS Security Best Practices](https://aws.amazon.com/security/security-resources/)
-- [AWS ECS Documentation](https://docs.aws.amazon.com/ecs/)
+MIT License — free for learning and commercial use.
 
 ---
 
-**Built with ❤️ and AWS best practices for hands-on learning**
+## Author
+
+**Shashank Chinchli** — AWS Solutions Architect & Golden Jacket Holder
+
+[![GitHub](https://img.shields.io/badge/GitHub-schinchli-black?logo=github)](https://github.com/schinchli)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-shashankk-blue?logo=linkedin)](https://www.linkedin.com/in/shashankk/)
+
+---
+
+**Build real AWS skills. Think like a Solutions Architect. Engineer like production.**
+
+Star this repository to follow upcoming AWS labs.

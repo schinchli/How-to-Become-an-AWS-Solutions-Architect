@@ -1,6 +1,17 @@
-# How to Host a Static Website on AWS S3 with CloudFront CDN: Complete 2026 Guide
+# How to Host a Static Website on AWS S3 with CloudFront CDN
 
-> **Deploy a serverless, secure, and globally distributed static website on AWS for under $0.05/month**
+[![AWS](https://img.shields.io/badge/AWS-Storage%20%26%20CDN-FF9900?logo=amazon-aws)](https://aws.amazon.com/s3/)
+[![S3](https://img.shields.io/badge/Service-S3-green)](https://aws.amazon.com/s3/)
+[![CloudFront](https://img.shields.io/badge/Service-CloudFront-blue)](https://aws.amazon.com/cloudfront/)
+[![Difficulty](https://img.shields.io/badge/Difficulty-Beginner-brightgreen)]()
+[![Duration](https://img.shields.io/badge/Duration-30%20mins-lightgrey)]()
+
+> **Architecting on AWS** - Hands-on Lab Series
+> **Level:** Beginner | **Time:** 30 minutes | **Cost:** ~$0.02-0.05/month
+
+---
+
+Deploy a serverless, secure, and globally distributed static website on AWS. This lab teaches you how to leverage S3 for storage and CloudFront CDN for global delivery with Origin Access Identity (OAI) for security.
 
 ---
 
@@ -385,6 +396,18 @@ aws s3 sync ./website/ s3://$BUCKET_NAME/
 
 ---
 
-**Keywords**: AWS S3 static website hosting, CloudFront CDN tutorial, serverless website AWS, S3 CloudFront OAI, host static website AWS, AWS website hosting cost, CloudFront HTTPS setup
+---
+
+**Don't just read—build.** Deploy this lab, experiment with cache invalidation, test different TTL configurations, and develop a practical understanding of serverless static hosting that powers millions of production websites.
+
+---
+
+## License
+
+MIT License - Free to use for learning and commercial projects.
+
+---
+
+Created by **[Shashank Chinchli](https://www.linkedin.com/in/shashankk/)**, an AWS Solutions Architect and Golden Jacket Holder, as part of the *Architecting on AWS Hands-on Labs Series*.
 
 **Last Updated**: January 2026
