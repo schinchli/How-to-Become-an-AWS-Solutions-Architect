@@ -1,6 +1,6 @@
-# Architecting on AWS
+# How to Become an AWS Solutions Architect: A Practical Hands-On Guide
 
-**Hands-On Labs to Master AWS Solutions Architecture**
+**Master AWS Architecture Through Real-World Labs**
 
 [![AWS](https://img.shields.io/badge/AWS-Solutions%20Architecture-FF9900?logo=amazon-aws)](https://aws.amazon.com/architecture/)
 [![Well-Architected](https://img.shields.io/badge/AWS-Well--Architected-blue)](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html)
@@ -10,7 +10,7 @@
 
 ## Why This Repository?
 
-**Architecting on AWS** is a hands-on learning path for developers, DevOps engineers, and cloud professionals preparing for the **AWS Solutions Architect Associate** exam or building production-ready AWS skills.
+This is a hands-on learning path for developers, DevOps engineers, and cloud professionals preparing for the **AWS Solutions Architect Associate** exam or building production-ready AWS skills.
 
 Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Architected Framework](https://docs.aws.amazon.com/wellarchitected/latest/framework/welcome.html).
 
@@ -40,7 +40,7 @@ Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Archi
 
 ```bash
 # Clone the repository
-git clone https://github.com/schinchli/ArchitectingonAWS.git
+git clone https://github.com/schinchli/How-to-Become-an-AWS-Solutions-Architect.git
 
 # Navigate to a lab
 cd "Hands on Labs/IAM 101"
