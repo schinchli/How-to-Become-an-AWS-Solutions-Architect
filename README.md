@@ -29,10 +29,10 @@ Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Archi
 
 | # | Lab | Services | Duration | Level |
 |---|-----|----------|----------|-------|
-| 1 | [IAM 101: Complete Guide to AWS Identity and Access Management](Hands%20on%20Labs/IAM%20101/README.md) | IAM, Policies, Roles | 20 min | Beginner |
-| 2 | [Host a Static Website on AWS S3 with CloudFront CDN](Hands%20on%20Labs/How%20to%20Host%20a%20Static%20Website%20on%20AWS%20S3%20with%20CloudFront%20CDN%20-%20Complete%202026%20Guide/README.md) | S3, CloudFront, ACM | 30 min | Beginner |
-| 3 | [Deploying WordPress CMS on ECS](Hands%20on%20Labs/Deploying%20WordPress%20CMS%20On%20ECS/README.md) | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
-| 4 | [Securing RDS Credentials with KMS and Secrets Manager](Hands%20on%20Labs/Securing%20RDS%20Database%20Credentials%20with%20AWS%20KMS%20and%20Secrets%20Manager%20(Hands-On%2C%20Zero-Downtime%20Rotation)/README.md) | KMS, Secrets Manager, RDS, Lambda | 30 min | Intermediate |
+| 1 | [IAM Fundamentals](Hands%20on%20Labs/Lab-01-IAM-Fundamentals/README.md) | IAM, Policies, Roles | 20 min | Beginner |
+| 2 | [S3 + CloudFront Static Website](Hands%20on%20Labs/Lab-02-S3-CloudFront-Static-Website/README.md) | S3, CloudFront, ACM | 30 min | Beginner |
+| 3 | [WordPress on ECS Fargate](Hands%20on%20Labs/Lab-03-WordPress-ECS/README.md) | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
+| 4 | [RDS Secrets with KMS](Hands%20on%20Labs/Lab-04-RDS-Secrets-KMS/README.md) | KMS, Secrets Manager, RDS | 30 min | Intermediate |
 
 ---
 
@@ -43,7 +43,7 @@ Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Archi
 git clone https://github.com/schinchli/How-to-Become-an-AWS-Solutions-Architect.git
 
 # Navigate to a lab
-cd "Hands on Labs/IAM 101"
+cd "Hands on Labs/Lab-01-IAM-Fundamentals"
 
 # Follow the README for step-by-step instructions
 ```
