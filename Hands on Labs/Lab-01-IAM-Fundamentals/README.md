@@ -537,7 +537,9 @@ echo "Cleanup complete!"
 
 ---
 
-**Don't just read—build.** Deploy this lab, experiment with different permission configurations, intentionally test access boundaries, and develop a practical understanding of AWS IAM that will serve you in every future AWS project.
+AWS IAM is the foundation of cloud security. Whether you’re deploying your first workload or architecting multi-account environments, understanding IAM determines how secure—and scalable—your AWS environment will be. This hands-on IAM 101 lab equips you with real-world skills you’ll use across every AWS service, from EC2 and S3 to Lambda and Bedrock.
+
+**Don't just read—build.** Deploy the lab, test permission boundaries, and master AWS IAM the right way.
 
 ---
 
