@@ -10,7 +10,7 @@
 
 ---
 
-Understanding IAM is foundational to every AWS deployment. This lab teaches you how to securely manage identities, implement least-privilege access, and avoid common security pitfalls that lead to breaches.
+AWS Identity and Access Management (IAM) is the backbone of cloud security—and mastering it is non-negotiable for anyone working with AWS. In this beginner-friendly, hands-on IAM 101 lab, you’ll learn how to securely manage users, roles, and permissions, apply the principle of least privilege, and avoid common misconfigurations that lead to real-world cloud breaches. Designed for aspiring cloud engineers, DevOps professionals, and security practitioners, this 20-minute, free AWS IAM tutorial helps you build a strong security foundation that applies to every AWS service and workload.
 
 ---
 
