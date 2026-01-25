@@ -96,13 +96,8 @@ All labs follow strict security practices:
 
 ## Recommended Reading
 
-### AWS Certification Exam Prep
-
-- [How to Prepare for AWS Certified Machine Learning Engineer - Associate?](https://builder.aws.com/content/2nrxvbk0uXPUOUbL75mi5PX0mKn/how-to-prepare-for-aws-certified-machine-learning-engineer-associate)
-
-### AWS Security & Automation
-
-- [How to Use AWS Security Agent for Automated Vulnerability Detection and Remediation?](https://aws.plainenglish.io/how-to-use-aws-security-agent-for-automated-vulnerability-detection-and-remediation-cfdaef9af5b8)
+- **Exam Prep:** [How to Prepare for AWS Certified Machine Learning Engineer - Associate?](https://builder.aws.com/content/2nrxvbk0uXPUOUbL75mi5PX0mKn/how-to-prepare-for-aws-certified-machine-learning-engineer-associate)
+- **Security:** [How to Use AWS Security Agent for Automated Vulnerability Detection and Remediation?](https://aws.plainenglish.io/how-to-use-aws-security-agent-for-automated-vulnerability-detection-and-remediation-cfdaef9af5b8)
 
 ---
 
