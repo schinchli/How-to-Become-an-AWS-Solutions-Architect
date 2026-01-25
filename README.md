@@ -27,12 +27,13 @@ Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Archi
 
 ## Available Labs
 
-| # | Lab | Services | Duration | Level |
-|---|-----|----------|----------|-------|
-| 1 | [IAM Fundamentals](Hands%20on%20Labs/Lab-01-IAM-Fundamentals/README.md) | IAM, Policies, Roles | 20 min | Beginner |
-| 2 | [S3 + CloudFront Static Website](Hands%20on%20Labs/Lab-02-S3-CloudFront-Static-Website/README.md) | S3, CloudFront, ACM | 30 min | Beginner |
-| 3 | [WordPress on ECS Fargate](Hands%20on%20Labs/Lab-03-WordPress-ECS/README.md) | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
-| 4 | [RDS Secrets with KMS](Hands%20on%20Labs/Lab-04-RDS-Secrets-KMS/README.md) | KMS, Secrets Manager, RDS | 30 min | Intermediate |
+| # | Lab | Domain | Services | Duration | Level |
+|---|-----|--------|----------|----------|-------|
+| 1 | [IAM Fundamentals](Hands%20on%20Labs/Lab-01-IAM-Fundamentals/README.md) | Identity | IAM, Policies, Roles | 20 min | Beginner |
+| 2 | [S3 + CloudFront Static Website](Hands%20on%20Labs/Lab-02-S3-CloudFront-Static-Website/README.md) | Storage | S3, CloudFront, ACM | 30 min | Beginner |
+| 3 | [WordPress on ECS Fargate](Hands%20on%20Labs/Lab-03-WordPress-ECS/README.md) | Compute | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
+| 4 | [Securing RDS Credentials (Zero-Downtime Rotation)](https://github.com/schinchli/Security-Engineering-on-AWS/tree/main/Hands%20on%20Labs/Securing%20RDS%20Database%20Credentials%20with%20AWS%20KMS%20and%20Secrets%20Manager%20(Hands-On%2C%20Zero-Downtime%20Rotation)) | Security | KMS, Secrets Manager, RDS, Lambda | 45 min | Intermediate |
+| 5 | [RDS Secrets with KMS](Hands%20on%20Labs/Lab-04-RDS-Secrets-KMS/README.md) | Security | KMS, Secrets Manager, RDS | 30 min | Intermediate |
 
 ---
 
