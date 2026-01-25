@@ -132,4 +132,4 @@ If this repo helped you and you'd like deeper guidance or hands-on support, feel
 
 ---
 
-**Build real AWS skills. Think like a Solutions Architect. Engineer like production.** Star this repository to follow upcoming AWS labs.
+**Build real AWS skills. Think like a Solutions Architect. Engineer like it runs in production.** Star this repository for upcoming AWS labs.
