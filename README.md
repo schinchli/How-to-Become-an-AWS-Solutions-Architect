@@ -121,11 +121,14 @@ MIT License — free for learning and commercial use.
 
 ## Author
 
-**Shashank Chinchli** — AWS Solutions Architect & Golden Jacket Holder | [View my Credly badges](https://www.credly.com/users/shashank-chinchli/badges)
+If this repo helped you and you'd like deeper guidance or hands-on support, feel free to reach out for [1:1 mentoring on Topmate](https://topmate.io/heyshashank). You can also explore my [Credly badges](https://www.credly.com/users/shashank-chinchli/badges) and connect with me on [LinkedIn](https://www.linkedin.com/in/shashankk/).
+
+**Shashank Chinchli** — ex-AWS Solutions Architect & Golden Jacket Holder
 
 [![GitHub](https://img.shields.io/badge/GitHub-schinchli-black?logo=github)](https://github.com/schinchli)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-shashankk-blue?logo=linkedin)](https://www.linkedin.com/in/shashankk/)
 [![Credly](https://img.shields.io/badge/Credly-Badges-orange?logo=credly)](https://www.credly.com/users/shashank-chinchli/badges)
+[![Topmate](https://img.shields.io/badge/Topmate-1:1_Mentoring-blueviolet)](https://topmate.io/heyshashank)
 
 ---
 
