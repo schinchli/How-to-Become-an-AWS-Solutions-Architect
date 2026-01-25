@@ -33,7 +33,7 @@ Each lab implements **real-world AWS patterns** aligned with the [AWS Well-Archi
 | 2 | [S3 + CloudFront Static Website](Hands%20on%20Labs/Lab-02-S3-CloudFront-Static-Website/README.md) | Storage | S3, CloudFront, ACM | 30 min | Beginner |
 | 3 | [WordPress on ECS Fargate](Hands%20on%20Labs/Lab-03-WordPress-ECS/README.md) | Compute | ECS, Fargate, ALB, VPC | 45 min | Intermediate |
 | 4 | [Securing RDS Credentials (Zero-Downtime Rotation)](https://github.com/schinchli/Security-Engineering-on-AWS/tree/main/Hands%20on%20Labs/Securing%20RDS%20Database%20Credentials%20with%20AWS%20KMS%20and%20Secrets%20Manager%20(Hands-On%2C%20Zero-Downtime%20Rotation)) | Security | KMS, Secrets Manager, RDS, Lambda | 45 min | Intermediate |
-| 5 | [RDS Secrets with KMS](Hands%20on%20Labs/Lab-04-RDS-Secrets-KMS/README.md) | Security | KMS, Secrets Manager, RDS | 30 min | Intermediate |
+| 5 | [RDS Secrets with KMS](https://github.com/schinchli/Security-Engineering-on-AWS/blob/main/Hands%20on%20Labs/Securing%20RDS%20Database%20Credentials%20with%20AWS%20KMS%20and%20Secrets%20Manager%20(Hands-On%2C%20Zero-Downtime%20Rotation)/README.md) | Security | KMS, Secrets Manager, RDS | 30 min | Intermediate |
 
 ---
 
